@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Placement Officer Dashboard</title>
+    <link rel="stylesheet" href="/style.css">
+    <style>
+        body { font-family: Arial, sans-serif; background-color: #f4f4f4; margin: 0; padding: 0; }
+        header { background-color: #007bff; color: white; padding: 1rem; text-align: center; }
+        .container { display: flex; max-width: 1200px; margin: 20px auto; background-color: #fff; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); border-radius: 8px; overflow: hidden; }
+        .sidebar { width: 250px; padding: 20px; background-color: #e9ecef; border-right: 1px solid #ccc; }
+        .main-nav ul { list-style: none; padding: 0; }
+        .main-nav li { margin-bottom: 10px; }
+        .main-nav a { text-decoration: none; color: #333; display: block; padding: 10px; border-radius: 5px; }
+        .main-nav a:hover { background-color: #ddd; }
+        .content { flex-grow: 1; padding: 20px; }
+        form { background-color: #f9f9f9; padding: 20px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05); }
+        .input-group { margin-bottom: 15px; }
+        .input-group label { display: block; margin-bottom: 5px; font-weight: bold; }
+        .input-group input, .input-group textarea { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px; box-sizing: border-box; }
+        .post-success-message { background-color: #d4edda; color: #155724; padding: 15px; border-radius: 5px; margin-bottom: 20px; text-align: center; display: none; }
+        .job-card { background-color: #e9f5ff; border: 1px solid #cce5ff; padding: 15px; border-radius: 8px; margin-bottom: 15px; }
+        .application-list { list-style: none; padding: 0; }
+        .application-item { background-color: #f2f2f2; border: 1px solid #ddd; padding: 15px; margin-bottom: 10px; border-radius: 8px; }
+        .logout-btn { text-align: center; margin-top: auto; padding: 10px; background-color: #dc3545; color: white; border-radius: 5px; text-decoration: none; display: block; }
+        .review-btn { background-color: #007bff; color: white; border: none; padding: 8px 12px; border-radius: 5px; cursor: pointer; margin-top: 10px; }
+        .review-btn:hover { background-color: #0056b3; }
+        .applicant-list { list-style: none; padding: 0; margin-top: 10px; display: none; }
+        .applicant-item { background-color: #f9f9f9; border: 1px solid #ddd; padding: 10px; border-radius: 5px; margin-bottom: 5px; }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Placement Officer Portal</h1>
+    </header>
+    <div class="container">
+        <aside class="sidebar">
+            <nav class="main-nav">
+                <ul>
+                    <li><a href="#post-opening">Post an Opening</a></li>
+                    <li><a href="#review-applications">Review Applications</a></li>
+                    <li><a href="#posted-openings">Posted Openings</a></li>
+                    <li><a href="manage_recruiters.html">Manage Recruiters</a></li>
+                </ul>
+            </nav>
+            <a href="/Login/login.html" class="logout-btn">Logout</a>
+        </aside>
+        <main class="content">
+            <section id="post-opening">
+                <h2>Post a Job/Internship Opening</h2>
+                <div id="post-success-message" class="post-success-message">Opening posted successfully!</div>
+                <form id="postForm">
+                    <div class="input-group">
+                        <label for="companyName">Company Name</label>
+                        <input type="text" id="companyName" required>
+                    </div>
+                    <div class="input-group">
+                        <label for="jobRole">Job Role</label>
+                        <input type="text" id="jobRole" required>
+                    </div>
+                    <div class="input-group">
+                        <label for="stipend">Stipend</label>
+                        <input type="text" id="stipend">
+                    </div>
+                    <div class="input-group">
+                        <label for="duration">Duration</label>
+                        <input type="text" id="duration" placeholder="e.g., 6 months, Full-time">
+                    </div>
+                    <div class="input-group">
+                        <label for="requiredSkills">Required Skills</label>
+                        <input type="text" id="requiredSkills" placeholder="e.g., Python, SQL, AWS">
+                    </div>
+                    <div class="input-group">
+                        <label for="redirectingLink">Redirecting Link</label>
+                        <input type="url" id="redirectingLink" placeholder="e.g., https://careers.google.com/jobs/" required>
+                    </div>
+                    <div class="input-group">
+                        <label for="deadline">Application Deadline</label>
+                        <input type="date" id="deadline">
+                    </div>
+                    <button type="submit">Post Opening</button>
+                </form>
+            </section>
+            
+            <hr style="margin: 40px 0;">
+
+            <section id="review-applications">
+                <h2>Review Student Applications</h2>
+                <div id="applications-container">
+                    </div>
+            </section>
+
+            <hr style="margin: 40px 0;">
+
+            <section id="posted-openings">
+                <h2>Posted Openings</h2>
+                <div id="posted-openings-container">
+                    </div>
+            </section>
+        </main>
+    </div>
+    <script src="placement.js"></script>
+</body>
+</html>

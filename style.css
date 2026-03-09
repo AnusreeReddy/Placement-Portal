@@ -1,0 +1,99 @@
+Here is the CSS you can add to your **`style.css`** file to style the new login and registration pages. This code will give your forms a clean, professional, and consistent look.
+
+```css
+/* --- General Body & Page Container --- */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh; /* Use min-height to ensure it fills the viewport */
+    margin: 0;
+}
+
+/* --- Form Containers --- */
+.login-container,
+.register-container {
+    background-color: #fff;
+    padding: 40px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    width: 350px;
+}
+
+.login-container h2,
+.register-container h2 {
+    margin-bottom: 20px;
+    color: #333;
+}
+
+/* --- Input Fields and Labels --- */
+.input-group {
+    margin-bottom: 15px;
+    text-align: left;
+}
+
+.input-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+    color: #555;
+}
+
+.input-group input,
+.input-group select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box; /* Ensures padding doesn't affect total width */
+    font-size: 14px;
+}
+
+.input-group input:focus,
+.input-group select:focus {
+    border-color: #007bff;
+    outline: none;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.25);
+}
+
+/* --- Buttons --- */
+.input-group button {
+    width: 100%;
+    padding: 12px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
+}
+
+.input-group button:hover {
+    background-color: #0056b3;
+}
+
+/* --- Messages and Links --- */
+.message {
+    margin-top: 15px;
+    font-size: 14px;
+}
+
+.register-link,
+.back-link {
+    display: block;
+    margin-top: 20px;
+    color: #007bff;
+    text-decoration: none;
+    font-size: 14px;
+    transition: color 0.3s ease;
+}
+
+.register-link:hover,
+.back-link:hover {
+    text-decoration: underline;
+    color: #0056b3;
+}

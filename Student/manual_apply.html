@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manual Application</title>
+    <style>
+        body { font-family: Arial, sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; background-color: #f0f2f5; margin: 0; }
+        .form-container { background-color: white; padding: 30px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); width: 400px; }
+        h2 { text-align: center; color: #333; margin-bottom: 20px; }
+        .input-group { margin-bottom: 15px; }
+        .input-group label { display: block; margin-bottom: 5px; font-weight: bold; }
+        .input-group input, .input-group textarea { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px; box-sizing: border-box; }
+        .submit-btn { width: 100%; padding: 10px; background-color: #28a745; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 16px; margin-top: 10px; }
+    </style>
+</head>
+<body>
+    <div class="form-container">
+        <h2>Manual Application Form</h2>
+        <form id="manualApplicationForm">
+            <div class="input-group">
+                <label for="name">Full Name</label>
+                <input type="text" id="name" required>
+            </div>
+            <div class="input-group">
+                <label for="email">Email Address</label>
+                <input type="email" id="email" required>
+            </div>
+            <div class="input-group">
+                <label for="coverLetter">Cover Letter</label>
+                <textarea id="coverLetter" rows="5" required></textarea>
+            </div>
+            <button type="submit" class="submit-btn">Submit Application</button>
+        </form>
+    </div>
+    <script>
+        document.getElementById('manualApplicationForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            alert("Your manual application has been submitted!");
+            window.location.href = 'your_applications.html';
+        });
+    </script>
+</body>
+</html>

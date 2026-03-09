@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alumni Network</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .alumni-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; padding: 20px; }
+        .alumni-card { background-color: white; border: 1px solid #ddd; border-radius: 8px; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); padding: 20px; text-align: center; }
+        .alumni-card img { width: 100px; height: 100px; border-radius: 50%; object-fit: cover; margin-bottom: 15px; }
+        .alumni-card h4 { margin: 0; color: #333; }
+        .alumni-card p { font-size: 0.9em; color: #666; margin: 5px 0; }
+        .alumni-card .contact-btn { background-color: #007bff; color: white; padding: 8px 15px; border-radius: 5px; text-decoration: none; display: inline-block; margin-top: 10px; }
+    </style>
+</head>
+<body>
+    <header><h1>Alumni Network</h1></header>
+    <div class="alumni-grid" id="alumni-list"></div>
+    <a href="student_dashboard.html" style="display:block; text-align:center; margin-top: 20px; color:#007bff;">← Back to Dashboard</a>
+
+    <script>
+        const alumniList = document.getElementById('alumni-list');
+        const alumni = [
+            { name: 'Suhas Reddy', year: '2020', branch: 'CSE', company: 'Google', role: 'Software Engineer' },
+            { name: 'Pooja Singh', year: '2019', branch: 'ECE', company: 'Microsoft', role: 'Data Analyst' },
+            { name: 'Karthik Rao', year: '2018', branch: 'Mech', company: 'TCS', role: 'Senior Consultant' },
+            { name: 'Ananya Sharma', year: '2021', branch: 'IT', company: 'Amazon', role: 'Solutions Architect' },
+            { name: 'Rahul Varma', year: '2017', branch: 'CSE', company: 'Meta', role: 'Product Manager' },
+        ];
+
+        alumni.forEach(person => {
+            const card = document.createElement('div');
+            card.className = 'alumni-card';
+            card.innerHTML = `
+                <img src="https://i.pravatar.cc/150?u=${person.name.replace(/\s/g, '')}" alt="${person.name}">
+                <h4>${person.name}</h4>
+                <p>CBIT, Class of ${person.year}</p>
+                <p><strong>${person.role}</strong> at ${person.company}</p>
+                <p>Branch: ${person.branch}</p>
+                <a href="#" class="contact-btn">Connect</a>
+            `;
+            alumniList.appendChild(card);
+        });
+    </script>
+</body>
+</html>

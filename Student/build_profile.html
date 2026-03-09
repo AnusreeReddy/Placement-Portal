@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Build Your Profile</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f4f9; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; }
+        .profile-container { background-color: #fff; padding: 40px; border-radius: 10px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); width: 450px; }
+        .profile-container h2 { color: #004d99; text-align: center; margin-bottom: 20px; }
+        .input-group { margin-bottom: 20px; }
+        .input-group label { display: block; margin-bottom: 8px; font-weight: bold; color: #555; }
+        .input-group input, .input-group textarea { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; }
+        .input-group input:focus, .input-group textarea:focus { outline: none; border-color: #007bff; box-shadow: 0 0 5px rgba(0, 123, 255, 0.2); }
+        .save-btn { width: 100%; padding: 12px; background-color: #28a745; color: white; border: none; border-radius: 6px; font-size: 1.1em; cursor: pointer; transition: background-color 0.3s; }
+        .save-btn:hover { background-color: #218838; }
+        .back-btn:hover{background-color:#ccc}
+
+        .profile-success-message { background-color: #d4edda; color: #155724; padding: 15px; border-radius: 5px; margin-top: 20px; text-align: center; display: none; }
+    </style>
+</head>
+<body>
+    <div class="profile-container">
+        <h2>Build Your Student Profile</h2>
+        <form id="profileForm">
+            <div class="input-group">
+                <label for="name">Full Name</label>
+                <input type="text" id="name" required>
+            </div>
+            <div class="input-group">
+                <label for="branch">Branch</label>
+                <input type="text" id="branch" required>
+            </div>
+            <div class="input-group">
+                <label for="skills">Skills (comma-separated)</label>
+                <textarea id="skills" rows="3" placeholder="e.g., Python, SQL, AWS, Machine Learning" required></textarea>
+            </div>
+            <div class="input-group">
+                <label for="resume">Upload Resume</label>
+                <input type="file" id="resume" accept=".pdf,.doc,.docx" required>
+            </div>
+            <button type="submit" class="save-btn">Save Profile</button>
+            <button type="button" class="back-btn" onclick="goBack()">Back</button>
+        </form>
+        <p id="profile-success-message" class="profile-success-message">Profile saved successfully!</p>
+    </div>
+    <script src="student.js"></script>
+    <script>
+
+const profileForm = document.getElementById("profileForm");
+
+// Load existing profile data if available
+const savedProfile = JSON.parse(localStorage.getItem("studentProfile"));
+
+if(savedProfile){
+document.getElementById("name").value = savedProfile.name || "";
+document.getElementById("branch").value = savedProfile.branch || "";
+document.getElementById("skills").value = savedProfile.skills || "";
+}
+
+// Save profile
+profileForm.addEventListener("submit", function(e){
+
+e.preventDefault();
+
+const profile = {
+name: document.getElementById("name").value,
+branch: document.getElementById("branch").value,
+skills: document.getElementById("skills").value,
+resume: document.getElementById("resume").value
+};
+
+localStorage.setItem("studentProfile", JSON.stringify(profile));
+
+alert("Profile saved successfully!");
+
+window.location.href = "student_dashboard.html";
+
+});
+
+// Back button
+function goBack(){
+window.location.href = "student_dashboard.html";
+}
+
+</script>
+</body>
+</html>

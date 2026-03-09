@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recruiter Dashboard</title>
+    <link rel="stylesheet" href="/style.css">
+    <style>
+        /* General Layout */
+        body { font-family: Arial, sans-serif; background-color: #f4f4f4; color: #333; margin: 0; }
+        header { background-color: #007bff; color: white; padding: 20px; text-align: center; }
+        .container { display: flex; max-width: 1200px; margin: 20px auto; background-color: #fff; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); border-radius: 8px; overflow: hidden; }
+        .sidebar { width: 250px; padding: 20px; background-color: #e9ecef; border-right: 1px solid #ccc; }
+        .main-nav ul { list-style: none; padding: 0; }
+        .main-nav li { margin-bottom: 10px; }
+        .main-nav a { text-decoration: none; color: #333; display: block; padding: 10px; border-radius: 5px; }
+        .main-nav a:hover { background-color: #ddd; }
+        .logout-btn { display: block; padding: 10px; background-color: #dc3545; color: white; border-radius: 5px; text-align: center; margin-top: 20px; text-decoration: none; }
+        
+        /* Content Sections */
+        .content { flex-grow: 1; padding: 20px; }
+        section { margin-bottom: 30px; }
+        h2 { border-bottom: 2px solid #007bff; padding-bottom: 10px; margin-bottom: 20px; }
+        
+        /* Forms */
+        form { background: #f9f9f9; padding: 20px; border-radius: 8px; }
+        .input-group { margin-bottom: 15px; }
+        .input-group label { display: block; margin-bottom: 5px; font-weight: bold; }
+        .input-group input { width: calc(100% - 22px); padding: 10px; border: 1px solid #ccc; border-radius: 4px; }
+        button { padding: 10px 20px; background-color: #28a745; color: white; border: none; border-radius: 5px; cursor: pointer; }
+        button:hover { background-color: #218838; }
+        
+        /* Lists */
+        .job-card, .student-card { background-color: #e9ecef; border: 1px solid #ddd; padding: 15px; border-radius: 8px; margin-bottom: 15px; }
+        .student-list { display: flex; flex-wrap: wrap; gap: 20px; }
+        .student-card { min-width: 300px; }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Recruiter Portal</h1>
+    </header>
+    <div class="container">
+        <aside class="sidebar">
+            <nav class="main-nav">
+                <ul>
+                    <li><a href="#post-opening">Post an Opening</a></li>
+                    <li><a href="#my-openings">My Openings</a></li>
+                    <li><a href="#student-database">View Student Profiles</a></li>
+                </ul>
+            </nav>
+            <a href="/Login/login.html" class="logout-btn">Logout</a>
+        </aside>
+        <main class="content">
+            <section id="post-opening">
+                <h2>Post a Job/Internship Opening</h2>
+                <form id="postForm">
+                    <div class="input-group">
+                        <label for="companyName">Company Name</label>
+                        <input type="text" id="companyName" required>
+                    </div>
+                    <div class="input-group">
+                        <label for="jobRole">Job Role</label>
+                        <input type="text" id="jobRole" required>
+                    </div>
+                    <div class="input-group">
+                        <label for="stipend">Stipend/Salary</label>
+                        <input type="text" id="stipend">
+                    </div>
+                    <div class="input-group">
+                        <label for="duration">Duration</label>
+                        <input type="text" id="duration">
+                    </div>
+                    <div class="input-group">
+                        <label for="requiredSkills">Required Skills (comma-separated)</label>
+                        <input type="text" id="requiredSkills">
+                    </div>
+                    <div class="input-group">
+                        <label for="redirectingLink">Link to Application Page</label>
+                        <input type="url" id="redirectingLink">
+                    </div>
+                    <div class="input-group">
+                        <label for="deadline">Application Deadline</label>
+                        <input type="date" id="deadline">
+                    </div>
+                    <button type="submit">Post Opening</button>
+                </form>
+            </section>
+            
+            <section id="my-openings">
+                <h2>My Openings</h2>
+                <div id="my-openings-container">
+                    </div>
+            </section>
+            
+            <section id="student-database">
+                <h2>Student Database</h2>
+                <div class="student-list" id="student-list">
+                    </div>
+            </section>
+        </main>
+    </div>
+    <script src="recruiter.js"></script>
+</body>
+</html>
