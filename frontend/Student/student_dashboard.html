@@ -51,7 +51,7 @@
                 <p><strong>Name:</strong> <span id="profile-name">John Doe</span></p>
                 <p><strong>Branch:</strong> <span id="profile-branch">Computer Science</span></p>
                 <p><strong>Skills:</strong> <span id="profile-skills">HTML, CSS, JavaScript, React</span></p>
-                <a href="build_profile.html" class="profile-edit-btn">Edit Profile</a>
+                <a href="http://127.0.0.1:5000/student/build-profile" class="profile-edit-btn">Edit Profile</a>
             </div>
             <div class="gamification-card">
                 <h3>Your Streak & Badges</h3>
@@ -63,8 +63,8 @@
                 <ul>
                     <li><a href="#opportunities">Internships & Placements</a></li>
                     <li><a href="#events">Events</a></li>
-                    <li><a href="your_applications.html">Your Applications</a></li>
-                    <li><a href="alumni_network.html">Alumni Network</a></li>
+                    <li><a href="http://127.0.0.1:5000/student/applications">Your Applications</a></li>
+                    <li><a href="http://127.0.0.1:5000/student/alumni">Alumni Network</a></li>
                 </ul>
             </nav>
             <a href="#" class="logout-btn" id="logoutBtn">Logout</a>
@@ -85,31 +85,14 @@
             </section>
         </main>
     </div>
-    <script src="student.js"></script>
+    <section>
+
+<h2>Recommended Jobs For You ⭐</h2>
+
+<div id="recommended-list"></div>
+
+</section>
+    <script src="http://127.0.0.1:5000/student.js"></script>
 
 </body>
-<script>
-    const profileNameElem = document.getElementById('profileNameElem');
-
-    // Read logged-in user from sessionStorage (set by auth.js during login)
-    const loggedUserRaw = sessionStorage.getItem('loggedInUser');
-    const loggedUser = loggedUserRaw ? JSON.parse(loggedUserRaw) : null;
-
-    if (profileNameElem && loggedUser && loggedUser.name) {
-        profileNameElem.textContent = loggedUser.name;
-    } else {
-        // Not authenticated — redirect to login
-        window.location.href = '/Login/login.html';
-    }
-
-    // Logout: clear session and redirect to login
-    const logoutBtn = document.getElementById('logoutBtn');
-    if (logoutBtn) {
-        logoutBtn.addEventListener('click', (e) => {
-            e.preventDefault();
-            sessionStorage.removeItem('loggedInUser');
-            window.location.href = '/Login/login.html';
-        });
-    }
-</script>
 </html>

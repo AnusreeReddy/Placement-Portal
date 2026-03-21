@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Build Your Profile</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="http://127.0.0.1:5000/style.css">
     <style>
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f4f9; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; }
         .profile-container { background-color: #fff; padding: 40px; border-radius: 10px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); width: 450px; }
@@ -45,43 +45,104 @@
         </form>
         <p id="profile-success-message" class="profile-success-message">Profile saved successfully!</p>
     </div>
-    <script src="student.js"></script>
     <script>
 
 const profileForm = document.getElementById("profileForm");
+const token = localStorage.getItem("token");
 
-// Load existing profile data if available
-const savedProfile = JSON.parse(localStorage.getItem("studentProfile"));
-
-if(savedProfile){
-document.getElementById("name").value = savedProfile.name || "";
-document.getElementById("branch").value = savedProfile.branch || "";
-document.getElementById("skills").value = savedProfile.skills || "";
+if (!token) {
+    alert("Please login first");
+    window.location.href = "http://127.0.0.1:5000/login";
 }
+
+// Load existing profile data from backend
+fetch("http://127.0.0.1:5000/profile", {
+    headers: {
+        "Authorization": "Bearer " + token
+    }
+})
+.then(res => res.json())
+.then(data => {
+    if (data.name) document.getElementById("name").value = data.name;
+    if (data.branch) document.getElementById("branch").value = data.branch;
+    if (data.skills) document.getElementById("skills").value = data.skills;
+})
+.catch(err => console.log("Could not load profile:", err));
 
 // Save profile
 profileForm.addEventListener("submit", function(e){
+    e.preventDefault();
 
-e.preventDefault();
+    const name = document.getElementById("name").value;
+    const branch = document.getElementById("branch").value;
+    const skills = document.getElementById("skills").value;
+    const resumeInput = document.getElementById("resume");
+    const resumeFile = resumeInput.files[0];
 
-const profile = {
-name: document.getElementById("name").value,
-branch: document.getElementById("branch").value,
-skills: document.getElementById("skills").value,
-resume: document.getElementById("resume").value
-};
+    // First, upload the resume if a file is selected
+    let uploadPromise = Promise.resolve();
+    
+    if (resumeFile) {
+        const formData = new FormData();
+        formData.append('resume', resumeFile);
+        
+        uploadPromise = fetch("http://127.0.0.1:5000/upload-resume", {
+            method: "POST",
+            headers: {
+                "Authorization": "Bearer " + token
+            },
+            body: formData
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (!data.message) throw new Error(data.error || "Upload failed");
+            return data;
+        });
+    }
+    
+    // Then save the profile info
+    uploadPromise.then(() => {
+        const profile = {
+            name: name,
+            branch: branch,
+            skills: skills,
+            resume: resumeFile ? resumeFile.name : ""
+        };
 
-localStorage.setItem("studentProfile", JSON.stringify(profile));
-
-alert("Profile saved successfully!");
-
-window.location.href = "student_dashboard.html";
-
+        return fetch("http://127.0.0.1:5000/profile", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": "Bearer " + token
+            },
+            body: JSON.stringify(profile)
+        });
+    })
+    .then(res => {
+        if (!res.ok) {
+            throw new Error(`HTTP error! status: ${res.status}`);
+        }
+        return res.json();
+    })
+    .then(data => {
+        if (data.message) {
+            alert("Profile saved successfully!");
+            // Add a small delay before redirecting to ensure the server is ready
+            setTimeout(() => {
+                window.location.href = "http://127.0.0.1:5000/student/dashboard";
+            }, 500);
+        } else {
+            alert(data.error || "Error saving profile");
+        }
+    })
+    .catch(err => {
+        console.error("Error:", err);
+        alert("Error saving profile: " + err.message);
+    });
 });
 
-// Back button
-function goBack(){
-window.location.href = "student_dashboard.html";
+function goBack() {
+    window.location.href = "http://127.0.0.1:5000/student/dashboard";
 }
 
 </script>

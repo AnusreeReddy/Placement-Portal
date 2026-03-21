@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Alumni Network</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="http://127.0.0.1:5000/style.css">
     <style>
         .alumni-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; padding: 20px; }
         .alumni-card { background-color: white; border: 1px solid #ddd; border-radius: 8px; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); padding: 20px; text-align: center; }
@@ -17,7 +17,7 @@
 <body>
     <header><h1>Alumni Network</h1></header>
     <div class="alumni-grid" id="alumni-list"></div>
-    <a href="student_dashboard.html" style="display:block; text-align:center; margin-top: 20px; color:#007bff;">← Back to Dashboard</a>
+    <a href="http://127.0.0.1:5000/student/dashboard" style="display:block; text-align:center; margin-top: 20px; color:#007bff;">← Back to Dashboard</a>
 
     <script>
         const alumniList = document.getElementById('alumni-list');

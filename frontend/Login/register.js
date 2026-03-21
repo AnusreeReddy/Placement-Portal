@@ -1,12 +1,9 @@
 document.addEventListener('DOMContentLoaded', () => {
-
     const registerForm = document.getElementById('registerForm');
-    const loginForm = document.getElementById('loginForm');
     const passwordInput = document.getElementById('password');
     const passwordStrengthElem = document.getElementById('passwordStrength');
-    const BACKEND_URL = "http://127.0.0.1:5000";
 
-    // --- Password Strength Checker ---
+    // Password Strength Checker
     function checkPasswordStrength() {
         if (!passwordInput || !passwordStrengthElem) return;
 
@@ -19,21 +16,11 @@ document.addEventListener('DOMContentLoaded', () => {
         const hasNumber = /[0-9]/.test(password);
         const hasSpecialChar = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]+/.test(password);
 
-        if (password.length >= 8) {
-            strength++;
-        }
-        if (hasLowerCase) {
-            strength++;
-        }
-        if (hasUpperCase) {
-            strength++;
-        }
-        if (hasNumber) {
-            strength++;
-        }
-        if (hasSpecialChar) {
-            strength++;
-        }
+        if (password.length >= 8) strength++;
+        if (hasLowerCase) strength++;
+        if (hasUpperCase) strength++;
+        if (hasNumber) strength++;
+        if (hasSpecialChar) strength++;
 
         switch (strength) {
             case 0:
@@ -63,7 +50,7 @@ document.addEventListener('DOMContentLoaded', () => {
         passwordInput.addEventListener('input', checkPasswordStrength);
     }
 
-    // --- Registration Logic (API) ---
+    // Registration Logic
     if (registerForm) {
         registerForm.addEventListener('submit', async (e) => {
             e.preventDefault();
@@ -81,7 +68,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             try {
-                const response = await fetch(`${BACKEND_URL}/register`, {
+                const response = await fetch('http://127.0.0.1:5000/register', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -102,7 +89,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     registerForm.reset();
                     
                     setTimeout(() => {
-                        window.location.href = `${BACKEND_URL}/login`;
+                        window.location.href = 'http://127.0.0.1:5000/login';
                     }, 2000);
                 } else {
                     registerMessage.textContent = data.error || 'Registration failed.';
@@ -114,69 +101,5 @@ document.addEventListener('DOMContentLoaded', () => {
                 console.error(error);
             }
         });
-    }
-
-    // --- Login Logic (API) ---
-    if (loginForm) {
-        loginForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-
-            const email = document.getElementById('email').value;
-            const password = document.getElementById('password').value;
-            const role = document.getElementById('role').value;
-            const loginMessage = document.getElementById('loginMessage');
-
-            try {
-                const response = await fetch(`${BACKEND_URL}/login`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        email: email,
-                        password: password,
-                        role: role
-                    })
-                });
-
-                const data = await response.json();
-
-                if (response.ok && data.token) {
-                    localStorage.setItem('token', data.token);
-                    localStorage.setItem('role', data.role);
-                    
-                    loginMessage.textContent = 'Login successful! Redirecting...';
-                    loginMessage.style.color = '#28a745';
-                    
-                    setTimeout(() => {
-                        if (data.role === 'student') {
-                            window.location.href = `${BACKEND_URL}/student/dashboard`;
-                        } else if (data.role === 'recruiter') {
-                            window.location.href = `${BACKEND_URL}/recruiter/dashboard`;
-                        } else if (data.role === 'placementOfficer') {
-                            window.location.href = `${BACKEND_URL}/placement/dashboard`;
-                        }
-                    }, 500);
-                } else {
-                    loginMessage.textContent = data.error || 'Invalid email, password, or role.';
-                    loginMessage.style.color = '#dc3545';
-                }
-            } catch (error) {
-                loginMessage.textContent = 'Error connecting to server.';
-                loginMessage.style.color = '#dc3545';
-                console.error(error);
-            }
-        });
-    }
-
-    // --- Verification Logic for Dashboard Pages ---
-    const token = localStorage.getItem('token');
-    const currentPage = window.location.pathname;
-
-    if (currentPage.includes('dashboard') || currentPage.includes('profile') || currentPage.includes('applications') || currentPage.includes('alumni') || currentPage.includes('build-profile')) {
-        if (!token) {
-            console.log("User not authenticated, redirecting to login");
-            window.location.href = `${BACKEND_URL}/login`;
-        }
     }
 });

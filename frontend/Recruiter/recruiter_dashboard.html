@@ -45,11 +45,13 @@
             <nav class="main-nav">
                 <ul>
                     <li><a href="#post-opening">Post an Opening</a></li>
+                    <li><a href="#post-hackathon">Post Hackathon</a></li>
+                    <li><a href="#post-event">Post Event</a></li>
                     <li><a href="#my-openings">My Openings</a></li>
                     <li><a href="#student-database">View Student Profiles</a></li>
                 </ul>
             </nav>
-            <a href="/Login/login.html" class="logout-btn">Logout</a>
+            <a href="http://127.0.0.1:5000/login" class="logout-btn" id="logoutBtn">Logout</a>
         </aside>
         <main class="content">
             <section id="post-opening">
@@ -87,6 +89,68 @@
                 </form>
             </section>
             
+            <section id="post-hackathon">
+                <h2>Post a Hackathon</h2>
+                <form id="postHackathonForm">
+                    <div class="input-group">
+                        <label for="hackTitle">Title</label>
+                        <input type="text" id="hackTitle" required>
+                    </div>
+                    <div class="input-group">
+                        <label for="hackDescription">Description</label>
+                        <textarea id="hackDescription" required></textarea>
+                    </div>
+                    <div class="input-group">
+                        <label for="hackOrganizer">Organizer</label>
+                        <input type="text" id="hackOrganizer" required>
+                    </div>
+                    <div class="input-group">
+                        <label for="hackSkills">Required Skills</label>
+                        <input type="text" id="hackSkills">
+                    </div>
+                    <div class="input-group">
+                        <label for="hackUrl">Registration Link</label>
+                        <input type="url" id="hackUrl">
+                    </div>
+                    <div class="input-group">
+                        <label for="hackDeadline">Deadline</label>
+                        <input type="date" id="hackDeadline">
+                    </div>
+                    <button type="submit">Post Hackathon</button>
+                </form>
+            </section>
+            
+            <section id="post-event">
+                <h2>Post an Event</h2>
+                <form id="postEventForm">
+                    <div class="input-group">
+                        <label for="eventTitle">Title</label>
+                        <input type="text" id="eventTitle" required>
+                    </div>
+                    <div class="input-group">
+                        <label for="eventDescription">Description</label>
+                        <textarea id="eventDescription" required></textarea>
+                    </div>
+                    <div class="input-group">
+                        <label for="eventOrganizer">Organizer</label>
+                        <input type="text" id="eventOrganizer" required>
+                    </div>
+                    <div class="input-group">
+                        <label for="eventSkills">Required Skills</label>
+                        <input type="text" id="eventSkills">
+                    </div>
+                    <div class="input-group">
+                        <label for="eventUrl">Registration Link</label>
+                        <input type="url" id="eventUrl">
+                    </div>
+                    <div class="input-group">
+                        <label for="eventDeadline">Deadline</label>
+                        <input type="date" id="eventDeadline">
+                    </div>
+                    <button type="submit">Post Event</button>
+                </form>
+            </section>
+            
             <section id="my-openings">
                 <h2>My Openings</h2>
                 <div id="my-openings-container">
@@ -100,6 +164,6 @@
             </section>
         </main>
     </div>
-    <script src="recruiter.js"></script>
+    <script src="http://127.0.0.1:5000/recruiter.js"></script>
 </body>
 </html>
