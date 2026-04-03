@@ -409,6 +409,24 @@ loadRecommendedJobs();
     });
 
 
+   window.askAI = async function ()  {
+
+    const query = document.getElementById("queryInput").value;
+
+    const res = await fetch("/ask-ai", {
+    method: "POST",
+    headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + localStorage.getItem("token")
+    },
+    body: JSON.stringify({ query })
+});
+
+    const data = await res.json();
+
+    document.getElementById("aiResult").innerHTML = data.answer;
+}
+
 
     // ================= LOGOUT =================
 
@@ -435,5 +453,47 @@ loadRecommendedJobs();
         );
 
     }
+
+// 🔥 BADGES DATA
+const badges = [
+    { name: "Beginner", desc: "1-day streak", earned: true },
+    { name: "Consistent", desc: "3-day streak", earned: false },
+    { name: "Pro", desc: "7-day streak", earned: false },
+    { name: "Champion", desc: "15-day streak", earned: false }
+];
+
+// 🔥 LOAD BADGES FUNCTION
+function loadBadges() {
+    const container = document.getElementById("badges-list");
+    container.innerHTML = "";
+
+    badges.forEach(badge => {
+        const div = document.createElement("div");
+
+        div.className = "badge-card " + (badge.earned ? "badge-earned" : "badge-locked");
+
+        div.innerHTML = `
+            <div class="badge-row">
+                <span class="badge-icon">🏆</span>
+                <strong>${badge.name}</strong>
+            </div>
+            <div>${badge.desc}</div>
+        `;
+
+        container.appendChild(div);
+    });
+}
+
+// 🔥 OPEN MODAL + LOAD DATA
+document.getElementById("viewBadgesBtn").onclick = () => {
+    document.getElementById("badgesModal").style.display = "flex";
+    loadBadges();
+};
+
+// 🔥 CLOSE MODAL
+document.getElementById("closeBadgesBtn").onclick = () => {
+    document.getElementById("badgesModal").style.display = "none";
+};
+
 
 });

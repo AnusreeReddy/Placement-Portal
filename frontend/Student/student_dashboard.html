@@ -53,11 +53,24 @@
                 <p><strong>Skills:</strong> <span id="profile-skills">HTML, CSS, JavaScript, React</span></p>
                 <a href="http://127.0.0.1:5000/student/build-profile" class="profile-edit-btn">Edit Profile</a>
             </div>
+            <!-- KEEP YOUR EXISTING CODE ABOVE SAME -->
+
             <div class="gamification-card">
                 <h3>Your Streak & Badges</h3>
-                <div class="streak-counter"><span id="streak-count">0</span>-day Streak 🔥</div>
+
+                <!-- 🔥 STREAK -->
+                <div class="streak-counter">
+                    <span id="streak-count">0</span>-day Streak 🔥
+                </div>
+
+                <!-- 🔥 BADGES DISPLAY -->
                 <div class="badges" id="badges-container"></div>
-                <button id="checkInBtn">Daily Check-in</button>
+
+                <!-- 🔥 BUTTONS -->
+                <div style="display:flex;gap:10px;justify-content:center;margin-top:8px;">
+                    <button id="checkInBtn">Daily Check-in</button>
+                    <button id="viewBadgesBtn">View Badges</button>
+                </div>
             </div>
             <nav class="main-nav">
                 <ul>
@@ -84,6 +97,7 @@
                 <div class="list-container" id="events-list"></div>
             </section>
         </main>
+
     </div>
     <section>
 
@@ -91,8 +105,35 @@
 
 <div id="recommended-list"></div>
 
+<h3>AI Assistant</h3>
+
+<input type="text" id="queryInput" placeholder="Ask AI (e.g., AI jobs)" />
+
+<button onclick="askAI()">Ask AI</button>
+
+<div id="aiResult"></div>
+
 </section>
     <script src="http://127.0.0.1:5000/student.js"></script>
+
+<div id="badgesModal" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;
+background:rgba(0,0,0,0.5);align-items:center;justify-content:center;z-index:10000;">
+
+    <div style="background:#fff;padding:20px;border-radius:8px;
+    max-width:700px;width:90%;max-height:80%;overflow:auto;">
+
+        <h3>Available Badges</h3>
+
+        <div id="badges-list"
+        style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));
+        gap:12px;margin-top:12px;"></div>
+
+        <div style="text-align:right;margin-top:12px;">
+            <button id="closeBadgesBtn">Close</button>
+        </div>
+
+    </div>
+</div>
 
 </body>
 </html>
