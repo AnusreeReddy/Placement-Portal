@@ -56,6 +56,8 @@ class User(db.Model):
 
     resume = db.Column(db.String(300))
 
+    extra_fields = db.Column(db.String(200))
+
     last_login_date = db.Column(db.DateTime)
 
     streak = db.Column(db.Integer, default=0)
@@ -81,6 +83,8 @@ class Job(db.Model):
 
     deadline = db.Column(db.String(50))
 
+    extra_fields = db.Column(db.String(200))
+
     posted_by = db.Column(db.Integer, db.ForeignKey('user.id'))
 
 
@@ -92,9 +96,11 @@ class Application(db.Model):
 
     job_id = db.Column(db.Integer, db.ForeignKey('job.id'), nullable=False)
 
-    status = db.Column(db.String(20), default='pending')  # pending, accepted, rejected
+    status = db.Column(db.String(20), default='pending')
 
     applied_date = db.Column(db.DateTime, default=datetime.utcnow)
+
+    extra_data = db.Column(db.Text)   
 
 
 class Hackathon(db.Model):
@@ -412,24 +418,24 @@ def post_job():
 
 
     job = Job(
+    company=data["company"],
 
-        company=data["company"],
+    role=data["role"],
 
-        role=data["role"],
+    stipend=data["stipend"],
 
-        stipend=data["stipend"],
+    duration=data["duration"],
 
-        duration=data["duration"],
+    skills=data["skills"],
 
-        skills=data["skills"],
+    url=data["url"],
 
-        url=data["url"],
+    deadline=data["deadline"],
 
-        deadline=data["deadline"],
+    extra_fields=data.get("extra_fields", ""),
 
-        posted_by=user_id
-
-    )
+    posted_by=user_id
+)
 
 
     db.session.add(job)
@@ -468,27 +474,20 @@ def get_jobs():
         is_past = deadline_date < now
 
         result.append({
-
             "id": job.id,
 
             "company": job.company,
 
             "role": job.role,
 
-            "stipend": job.stipend,
-
-            "duration": job.duration,
-
             "skills": job.skills,
-
-            "url": job.url,
 
             "deadline": job.deadline,
 
+            "extra_fields": job.extra_fields,
+
             "is_past": is_past
-
-        })
-
+})
 
     return jsonify(result)
 
@@ -533,7 +532,7 @@ def apply_job():
 
         return jsonify({"error": "Already applied"}), 409
 
-    application = Application(student_id=user_id, job_id=job_id)
+    application = Application(student_id=user_id,job_id=job_id,extra_data=str(data.get("extra_data")))
 
     db.session.add(application)
 
@@ -682,6 +681,57 @@ def get_streak():
     user = User.query.get(int(user_id))
 
     return jsonify({"streak": user.streak})
+
+
+@app.route("/streak", methods=["POST"])
+@jwt_required()
+def update_streak():
+    """Allow students to manually increment or set their streak.
+
+    POST body can be:
+    - {"action": "increment"}  -> increments streak by 1 if not already incremented today
+    - {"set": <int>} -> sets streak to provided value (useful for testing)
+    """
+    user_id = get_jwt_identity()
+    user = User.query.get(int(user_id))
+
+    if user.role != "student":
+        return jsonify({"error": "Only students can update streak"}), 403
+
+    data = request.json or {}
+
+    # Manual set (admin/test use)
+    if "set" in data:
+        try:
+            val = int(data.get("set", 0))
+            user.streak = max(0, val)
+            user.last_login_date = datetime.utcnow()
+            db.session.commit()
+            return jsonify({"streak": user.streak})
+        except Exception as e:
+            return jsonify({"error": "Invalid value"}), 400
+
+    action = data.get("action")
+    if action == "increment":
+        now = datetime.utcnow().date()
+        # Prevent multiple increments in same day
+        if user.last_login_date and user.last_login_date.date() == now:
+            return jsonify({"error": "Already checked in today", "streak": user.streak}), 400
+
+        if user.last_login_date:
+            last_date = user.last_login_date.date()
+            if last_date == now - timedelta(days=1):
+                user.streak = (user.streak or 0) + 1
+            else:
+                user.streak = 1
+        else:
+            user.streak = 1
+
+        user.last_login_date = datetime.utcnow()
+        db.session.commit()
+        return jsonify({"streak": user.streak})
+
+    return jsonify({"error": "Invalid request"}), 400
 
 
 # ================= CLEANUP JOBS =================

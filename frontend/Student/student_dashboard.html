@@ -40,6 +40,22 @@
         .deadline-indicator { position: absolute; top: 10px; right: 10px; padding: 5px 10px; border-radius: 5px; color: white; font-weight: bold; font-size: 0.8em; }
         .deadline-indicator.near { background-color: #dc3545; }
         .deadline-indicator.far { background-color: #28a745; }
+
+        /* Active / Expired job card colors */
+        .card.active { background-color: #e6ffed; color: #155724; border-color: #c3e6cb; }
+        .card.expired { background-color: #fcebeb; color: #721c24; border-color: #f5c6cb; }
+
+        /* Badge styles */
+        .badge { padding: 5px 10px; border-radius: 20px; font-size: 0.9em; color: white; }
+        .badge.bronze { background: #cd7f32; }
+        .badge.silver { background: #c0c0c0; color: #000; }
+        .badge.gold { background: #ffd700; color: #000; }
+        /* Modal badges grid */
+        #badges-list .badge-card { display:flex; flex-direction:column; gap:6px; padding:12px; border:1px solid #eee; border-radius:8px; background:#fff; box-shadow:0 1px 2px rgba(0,0,0,0.04); }
+        .badge-card .badge-row { display:flex; align-items:center; gap:10px; }
+        .badge-icon { font-size:1.6em; width:36px; height:36px; display:inline-flex; align-items:center; justify-content:center; border-radius:50%; }
+        .badge-earned { border: 2px solid #28a745; }
+        .badge-locked { opacity:0.55; }
     </style>
 </head>
 <body>
@@ -57,7 +73,12 @@
                 <h3>Your Streak & Badges</h3>
                 <div class="streak-counter"><span id="streak-count">0</span>-day Streak 🔥</div>
                 <div class="badges" id="badges-container"></div>
-                <button id="checkInBtn">Daily Check-in</button>
+                <div style="display:flex;gap:10px;justify-content:center;margin-top:8px;">
+                    <button id="checkInBtn">Daily Check-in</button>
+                    <button id="viewBadgesBtn">View Badges</button>
+                </div>
+
+                <!-- Badges Modal (moved to document root) -->
             </div>
             <nav class="main-nav">
                 <ul>
@@ -93,6 +114,16 @@
 
 </section>
     <script src="http://127.0.0.1:5000/student.js"></script>
+
+    <!-- Badges Modal (root-level to avoid stacking issues) -->
+    <div id="badgesModal" class="modal" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);align-items:center;justify-content:center;z-index:10000;">
+        <div class="modal-content" style="background:#fff;padding:20px;border-radius:8px;max-width:700px;width:90%;max-height:80%;overflow:auto;">
+            <h3>Available Badges</h3>
+            <p>Badges are earned based on streaks, applications submitted, and participation in events.</p>
+            <div id="badges-list" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;margin-top:12px;"></div>
+            <div style="text-align:right;margin-top:12px;"><button id="closeBadgesBtn">Close</button></div>
+        </div>
+    </div>
 
 </body>
 </html>
