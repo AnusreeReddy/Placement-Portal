@@ -1,129 +1,416 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Student Dashboard</title>
-    <link rel="stylesheet" href="/style.css">
-    <style>
-        .container { display: flex; max-width: 1200px; margin: 20px auto; background-color: #fff; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); border-radius: 8px; overflow: hidden; }
-        .sidebar { width: 250px; padding: 20px; background-color: #e9ecef; border-right: 1px solid #ccc; }
-        .profile-card, .gamification-card { background-color: #fff; padding: 15px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); margin-bottom: 20px; }
-        .main-nav ul { list-style: none; padding: 0; }
-        .main-nav li { margin-bottom: 10px; }
-        .main-nav a { text-decoration: none; color: #333; display: block; padding: 10px; border-radius: 5px; }
-        .main-nav a:hover { background-color: #ddd; }
-        .content { flex-grow: 1; padding: 20px; }
-        .list-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; }
-        .card { background-color: #f9f9f9; border: 1px solid #ddd; border-radius: 8px; padding: 15px; position: relative; }
-        .card.expired { background-color: #fcebeb; color: #721c24; border-color: #f5c6cb; }
-        .card h4 { margin-top: 0; color: #333; }
-        .card p { font-size: 0.9em; color: #666; }
-        .apply-btn-group { display: flex; gap: 10px; margin-top: 10px; }
-        .apply-btn, .manual-btn { padding: 8px 15px; border-radius: 5px; text-decoration: none; cursor: pointer; border: none; color: white; }
-        .apply-btn { background-color: #28a745; }
-        .manual-btn { background-color: #007bff; }
-        .register-btn { background-color: #007bff; color: white; padding: 8px 15px; border-radius: 5px; text-decoration: none; margin-top: 10px; cursor: pointer; border: none; }
-        .streak-counter { font-size: 2em; font-weight: bold; color: #ff5722; text-align: center; margin-bottom: 10px; }
-        .badges { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; }
-        .badge { background-color: #4caf50; color: white; padding: 5px 10px; border-radius: 20px; font-size: 0.9em; }
-        .logout-btn { text-align: center; margin-top: auto; padding: 10px; background-color: #dc3545; color: white; border-radius: 5px; text-decoration: none; display: block; }
-        .filter-buttons { margin-bottom: 20px; }
-        .filter-btn { padding: 10px 15px; border: 1px solid #ddd; border-radius: 5px; background-color: #f0f0f0; cursor: pointer; transition: all 0.2s; }
-        .filter-btn:hover { background-color: #e0e0e0; }
-        .filter-btn.active-filter { background-color: #007bff; color: white; border-color: #007bff; }
-        .skills-summary { margin-top: 10px; }
-        .skill-tag { display: inline-block; padding: 3px 8px; border-radius: 4px; font-size: 0.8em; margin: 2px; }
-        .matched-skill { background-color: #d4edda; color: #155724; }
-        .unmatched-skill { background-color: #f8d7da; color: #721c24; }
-        .match-accuracy { font-weight: bold; font-size: 1.1em; color: #007bff; }
-        .deadline-indicator { position: absolute; top: 10px; right: 10px; padding: 5px 10px; border-radius: 5px; color: white; font-weight: bold; font-size: 0.8em; }
-        .deadline-indicator.near { background-color: #dc3545; }
-        .deadline-indicator.far { background-color: #28a745; }
+<meta charset="UTF-8">
+<meta name="viewport"
+content="width=device-width, initial-scale=1.0">
 
-        /* Active / Expired job card colors */
-        .card.active { background-color: #e6ffed; color: #155724; border-color: #c3e6cb; }
-        .card.expired { background-color: #fcebeb; color: #721c24; border-color: #f5c6cb; }
+<title>Student Dashboard</title>
 
-        /* Badge styles */
-        .badge { padding: 5px 10px; border-radius: 20px; font-size: 0.9em; color: white; }
-        .badge.bronze { background: #cd7f32; }
-        .badge.silver { background: #c0c0c0; color: #000; }
-        .badge.gold { background: #ffd700; color: #000; }
-        /* Modal badges grid */
-        #badges-list .badge-card { display:flex; flex-direction:column; gap:6px; padding:12px; border:1px solid #eee; border-radius:8px; background:#fff; box-shadow:0 1px 2px rgba(0,0,0,0.04); }
-        .badge-card .badge-row { display:flex; align-items:center; gap:10px; }
-        .badge-icon { font-size:1.6em; width:36px; height:36px; display:inline-flex; align-items:center; justify-content:center; border-radius:50%; }
-        .badge-earned { border: 2px solid #28a745; }
-        .badge-locked { opacity:0.55; }
-    </style>
+<link rel="stylesheet" href="/style.css">
+
+<style>
+
+.container{
+display:flex;
+max-width:1200px;
+margin:20px auto;
+background:#fff;
+box-shadow:0 0 10px rgba(0,0,0,0.1);
+border-radius:8px;
+overflow:hidden;
+}
+
+.sidebar{
+width:250px;
+padding:20px;
+background:#e9ecef;
+border-right:1px solid #ccc;
+}
+
+.profile-card,
+.gamification-card{
+background:#fff;
+padding:15px;
+border-radius:8px;
+box-shadow:0 2px 5px rgba(0,0,0,0.1);
+margin-bottom:20px;
+}
+
+.main-nav ul{
+list-style:none;
+padding:0;
+}
+
+.main-nav li{
+margin-bottom:10px;
+}
+
+.main-nav a{
+text-decoration:none;
+color:#333;
+display:block;
+padding:10px;
+border-radius:5px;
+}
+
+.main-nav a:hover{
+background:#ddd;
+}
+
+.content{
+flex-grow:1;
+padding:20px;
+}
+
+.list-container{
+display:grid;
+grid-template-columns:
+repeat(auto-fill,minmax(300px,1fr));
+gap:20px;
+}
+
+.card{
+background:#f9f9f9;
+border:1px solid #ddd;
+border-radius:8px;
+padding:15px;
+position:relative;
+}
+
+.card.active{
+background:#e6ffed;
+border-color:#c3e6cb;
+}
+
+.card.expired{
+background:#fcebeb;
+border-color:#f5c6cb;
+}
+
+.streak-counter{
+font-size:2em;
+font-weight:bold;
+color:#ff5722;
+text-align:center;
+margin-bottom:10px;
+}
+
+.badges{
+display:flex;
+flex-wrap:wrap;
+gap:10px;
+justify-content:center;
+}
+
+.badge{
+padding:5px 10px;
+border-radius:20px;
+font-size:.9em;
+color:white;
+}
+
+.badge.bronze{background:#cd7f32;}
+.badge.silver{background:#c0c0c0;color:#000;}
+.badge.gold{background:#ffd700;color:#000;}
+
+.logout-btn{
+text-align:center;
+margin-top:auto;
+padding:10px;
+background:#dc3545;
+color:white;
+border-radius:5px;
+text-decoration:none;
+display:block;
+}
+
+.filter-buttons{
+margin-bottom:20px;
+}
+
+.filter-btn{
+padding:10px 15px;
+border:1px solid #ddd;
+border-radius:5px;
+background:#f0f0f0;
+cursor:pointer;
+}
+
+.filter-btn.active-filter{
+background:#007bff;
+color:white;
+}
+
+.deadline-indicator{
+position:absolute;
+top:10px;
+right:10px;
+padding:5px 10px;
+border-radius:5px;
+color:white;
+font-weight:bold;
+font-size:.8em;
+}
+
+.deadline-indicator.near{
+background:#dc3545;
+}
+
+.deadline-indicator.far{
+background:#28a745;
+}
+
+</style>
+
 </head>
-<body>
-    <h1>Welcome, <span id="profileNameElem"></span>!</h1>
-    <div class="container">
-        <aside class="sidebar">
-            <div class="profile-card">
-                <h3>Your Profile</h3>
-                <p><strong>Name:</strong> <span id="profile-name">John Doe</span></p>
-                <p><strong>Branch:</strong> <span id="profile-branch">Computer Science</span></p>
-                <p><strong>Skills:</strong> <span id="profile-skills">HTML, CSS, JavaScript, React</span></p>
-                <a href="http://127.0.0.1:5000/student/build-profile" class="profile-edit-btn">Edit Profile</a>
-            </div>
-            <div class="gamification-card">
-                <h3>Your Streak & Badges</h3>
-                <div class="streak-counter"><span id="streak-count">0</span>-day Streak 🔥</div>
-                <div class="badges" id="badges-container"></div>
-                <div style="display:flex;gap:10px;justify-content:center;margin-top:8px;">
-                    <button id="checkInBtn">Daily Check-in</button>
-                    <button id="viewBadgesBtn">View Badges</button>
-                </div>
 
-                <!-- Badges Modal (moved to document root) -->
-            </div>
-            <nav class="main-nav">
-                <ul>
-                    <li><a href="#opportunities">Internships & Placements</a></li>
-                    <li><a href="#events">Events</a></li>
-                    <li><a href="http://127.0.0.1:5000/student/applications">Your Applications</a></li>
-                    <li><a href="http://127.0.0.1:5000/student/alumni">Alumni Network</a></li>
-                </ul>
-            </nav>
-            <a href="#" class="logout-btn" id="logoutBtn">Logout</a>
-        </aside>
-        <main class="content">
-            <section id="opportunities">
-                <h2>Internships & Placements</h2>
-                <div class="filter-buttons">
-                    <button id="show-all-btn" class="filter-btn active-filter">Show All Opportunities</button>
-                    <button id="best-fit-btn" class="filter-btn">Show Best Fit For You</button>
-                </div>
-                <div class="list-container" id="opportunities-list"></div>
-            </section>
-            <hr style="margin: 40px 0;">
-            <section id="events">
-                <h2>Hackathons, Workshops & Seminars</h2>
-                <div class="list-container" id="events-list"></div>
-            </section>
-        </main>
-    </div>
-    <section>
+
+<body>
+
+<h1>
+Welcome,
+<span id="profileNameElem"></span>!
+</h1>
+
+
+<div class="container">
+
+
+<!-- SIDEBAR -->
+
+<aside class="sidebar">
+
+
+<div class="profile-card">
+
+<h3>Your Profile</h3>
+
+<p><strong>Name:</strong>
+<span id="profile-name"></span></p>
+
+<p><strong>Branch:</strong>
+<span id="profile-branch"></span></p>
+
+<p><strong>Skills:</strong>
+<span id="profile-skills"></span></p>
+
+<p><strong>CGPA:</strong>
+<span id="profile-cgpa"></span></p>
+
+<p><strong>Year:</strong>
+<span id="profile-year"></span></p>
+
+<a href="/student/build-profile"
+class="profile-edit-btn">
+Edit Profile
+</a>
+
+</div>
+
+
+<!-- GAMIFICATION CARD -->
+
+<div class="gamification-card">
+
+<h3>Your Streak & Badges</h3>
+
+<div class="streak-counter">
+<span id="streak-count">0</span>-day Streak 🔥
+</div>
+
+<div class="badges"
+id="badges-container"></div>
+
+
+<div style="display:flex;
+gap:10px;
+justify-content:center;
+margin-top:8px;">
+
+<button id="checkInBtn">
+Daily Check-in
+</button>
+
+<button id="viewBadgesBtn">
+View Badges
+</button>
+
+</div>
+
+</div>
+
+
+<nav class="main-nav">
+
+<ul>
+
+<li>
+<a href="#opportunities">
+Internships & Placements
+</a>
+</li>
+
+<li>
+<a href="#events">
+Events
+</a>
+</li>
+
+<li>
+<a href="/student/applications">
+Your Applications
+</a>
+</li>
+
+<li>
+<a href="/student/alumni">
+Alumni Network
+</a>
+</li>
+
+</ul>
+
+</nav>
+
+
+<a href="#"
+class="logout-btn"
+id="logoutBtn">
+Logout
+</a>
+
+</aside>
+
+
+
+<!-- MAIN CONTENT -->
+
+<main class="content">
+
+
+<section id="opportunities">
+
+<h2>Internships & Placements</h2>
+
+<div class="filter-buttons">
+
+<button id="show-all-btn"
+class="filter-btn active-filter">
+Show All Opportunities
+</button>
+
+<button id="best-fit-btn"
+class="filter-btn">
+Show Best Fit For You
+</button>
+
+</div>
+
+<div class="list-container"
+id="opportunities-list"></div>
+
+</section>
+
+
+<hr style="margin:40px 0;">
+
+
+<section id="events">
+
+<h2>Hackathons, Workshops & Seminars</h2>
+
+<div class="list-container"
+id="events-list"></div>
+
+</section>
+
+
+<section>
 
 <h2>Recommended Jobs For You ⭐</h2>
 
 <div id="recommended-list"></div>
 
-</section>
-    <script src="http://127.0.0.1:5000/student.js"></script>
 
-    <!-- Badges Modal (root-level to avoid stacking issues) -->
-    <div id="badgesModal" class="modal" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);align-items:center;justify-content:center;z-index:10000;">
-        <div class="modal-content" style="background:#fff;padding:20px;border-radius:8px;max-width:700px;width:90%;max-height:80%;overflow:auto;">
-            <h3>Available Badges</h3>
-            <p>Badges are earned based on streaks, applications submitted, and participation in events.</p>
-            <div id="badges-list" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;margin-top:12px;"></div>
-            <div style="text-align:right;margin-top:12px;"><button id="closeBadgesBtn">Close</button></div>
-        </div>
-    </div>
+<h3>AI Assistant</h3>
+
+<input type="text"
+id="queryInput"
+placeholder="Ask AI (example: AI jobs)" />
+
+<button onclick="askAI()">
+Ask AI
+</button>
+
+<div id="aiResult"></div>
+
+</section>
+
+
+</main>
+
+</div>
+
+
+
+<!-- BADGES MODAL -->
+
+<div id="badgesModal"
+style="display:none;
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background:rgba(0,0,0,.5);
+align-items:center;
+justify-content:center;
+z-index:10000;">
+
+<div style="
+background:#fff;
+padding:20px;
+border-radius:8px;
+max-width:700px;
+width:90%;
+max-height:80%;
+overflow:auto;">
+
+<h3>Available Badges</h3>
+
+<p>
+Badges are earned based on streaks,
+applications submitted,
+and participation in events.
+</p>
+
+<div id="badges-list"
+style="
+display:grid;
+grid-template-columns:
+repeat(auto-fill,
+minmax(200px,1fr));
+gap:12px;
+margin-top:12px;"></div>
+
+<div style="text-align:right;
+margin-top:12px;">
+
+<button id="closeBadgesBtn">
+Close
+</button>
+
+</div>
+
+</div>
+
+</div>
+
+
+
+<script src="/student.js"></script>
 
 </body>
+
 </html>

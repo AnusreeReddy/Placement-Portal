@@ -85,6 +85,29 @@
                         <label for="deadline">Application Deadline</label>
                         <input type="date" id="deadline">
                     </div>
+
+                    <div class="input-group">
+                        <label>Minimum CGPA</label>
+                            <input type="number" step="0.1" id="cgpa" placeholder="e.g. 7.5">
+                    </div>
+
+                    <div class="input-group">
+                        <label>Passout Year</label>
+                            <input type="number" id="year" placeholder="e.g. 2025">
+                    </div>
+
+                    <div class="input-group">
+                        <label>Eligible Branches</label>
+                        <input type="text" id="branches" placeholder="e.g. CSE, IT, ECE">
+                    </div>
+
+                    <div class="input-group">
+                        <label>Job Type</label>
+                            <select id="job_type">
+                                <option value="internship">Internship</option>
+                                <option value="job">Full-Time Job</option>
+                            </select>
+                    </div>
                     
                     <button type="submit">Post Opening</button>
                 </form>

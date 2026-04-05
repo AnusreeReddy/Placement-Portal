@@ -40,6 +40,14 @@
                 <label for="resume">Upload Resume</label>
                 <input type="file" id="resume" accept=".pdf,.doc,.docx" required>
             </div>
+            <div class="input-group">
+                <label>Year of Passout</label>
+                <input type="number" id="year" placeholder="e.g. 2025">
+            </div>
+            <div class="input-group">
+                <label>CGPA</label>
+                <input type="number" step="0.1" id="cgpa" placeholder="e.g. 8.2">
+            </div>
             <button type="submit" class="save-btn">Save Profile</button>
             <button type="button" class="back-btn" onclick="goBack()">Back</button>
         </form>
@@ -66,6 +74,8 @@ fetch("http://127.0.0.1:5000/profile", {
     if (data.name) document.getElementById("name").value = data.name;
     if (data.branch) document.getElementById("branch").value = data.branch;
     if (data.skills) document.getElementById("skills").value = data.skills;
+    if (data.cgpa) document.getElementById("cgpa").value = data.cgpa;
+    if (data.year) document.getElementById("year").value = data.year;
 })
 .catch(err => console.log("Could not load profile:", err));
 
@@ -76,6 +86,8 @@ profileForm.addEventListener("submit", function(e){
     const name = document.getElementById("name").value;
     const branch = document.getElementById("branch").value;
     const skills = document.getElementById("skills").value;
+    const cgpa = document.getElementById("cgpa").value;
+    const year = document.getElementById("year").value;
     const resumeInput = document.getElementById("resume");
     const resumeFile = resumeInput.files[0];
 
@@ -106,6 +118,8 @@ profileForm.addEventListener("submit", function(e){
             name: name,
             branch: branch,
             skills: skills,
+            cgpa: cgpa,
+            year: year,
             resume: resumeFile ? resumeFile.name : ""
         };
 

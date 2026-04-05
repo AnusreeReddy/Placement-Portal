@@ -1,3 +1,12 @@
+import requests
+YOUTUBE_API_KEY = "api"
+try:
+    from sentence_transformers import SentenceTransformer
+    import faiss
+    model = SentenceTransformer('all-MiniLM-L6-v2')
+except:
+    model = None
+    print("⚠️ RAG running in fallback mode")
 from flask import Flask, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
@@ -31,9 +40,87 @@ if not os.path.exists(app.config["UPLOAD_FOLDER"]):
 db = SQLAlchemy(app)
 jwt = JWTManager(app)
 
+def get_youtube_course(skill):
+
+    url = "https://www.googleapis.com/youtube/v3/search"
+
+    params = {
+        "part": "snippet",
+        "q": f"{skill} full course",
+        "key": YOUTUBE_API_KEY,
+        "maxResults": 1,
+        "type": "video"
+    }
+
+    try:
+        res = requests.get(url, params=params).json()
+
+        video = res["items"][0]
+        title = video["snippet"]["title"]
+        video_id = video["id"]["videoId"]
+
+        link = f"https://www.youtube.com/watch?v={video_id}"
+
+        # 🔥 CLICKABLE LINK
+        return f'<a href="{link}" target="_blank">{title}</a>'
+
+    except:
+        return f"Search '{skill} course' on YouTube"
+    
+def get_certification(skill):
+
+    skill = skill.lower()
+
+    # 🔥 smart mapping (not too manual, still flexible)
+    if "python" in skill:
+        return '<a href="https://www.coursera.org/specializations/python" target="_blank">Python Certification (Coursera)</a>'
+
+    elif "ml" in skill or "machine learning" in skill:
+        return '<a href="https://www.coursera.org/learn/machine-learning" target="_blank">Machine Learning Certification (Andrew Ng)</a>'
+
+    elif "cloud" in skill or "aws" in skill:
+        return '<a href="https://aws.amazon.com/certification/" target="_blank">AWS Certification</a>'
+
+    elif "data" in skill:
+        return '<a href="https://www.coursera.org/professional-certificates/google-data-analytics" target="_blank">Google Data Analytics Certification</a>'
+
+    elif "web" in skill or "react" in skill:
+        return '<a href="https://www.freecodecamp.org/learn/" target="_blank">Web Development Certification (freeCodeCamp)</a>'
+
+    else:
+        # 🔥 fallback (dynamic)
+        return f'<a href="https://www.google.com/search?q={skill}+certification" target="_blank">Search {skill} certification</a>'
+
 
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in app.config["ALLOWED_EXTENSIONS"]
+
+
+def get_company_video(company):
+
+    url = "https://www.googleapis.com/youtube/v3/search"
+
+    params = {
+        "part": "snippet",
+        "q": f"{company} interview questions",
+        "key": YOUTUBE_API_KEY,
+        "maxResults": 1,
+        "type": "video",
+        "order": "date"   # 🔥 latest videos
+    }
+
+    try:
+        res = requests.get(url, params=params).json()
+
+        video = res["items"][0]
+        video_id = video["id"]["videoId"]
+
+        link = f"https://www.youtube.com/watch?v={video_id}"
+
+        return f'<a href="{link}" target="_blank">🎥 {company} Interview Prep</a>'
+
+    except:
+        return f"Search {company} interview on YouTube"
 
 
 # ================= DATABASE MODELS =================
@@ -64,6 +151,13 @@ class User(db.Model):
 
     verified = db.Column(db.Boolean, default=False)
 
+    streak = db.Column(db.Integer, default=0)
+
+    cgpa = db.Column(db.Float)
+    year = db.Column(db.Integer)
+
+
+
 
 class Job(db.Model):
 
@@ -84,7 +178,10 @@ class Job(db.Model):
     deadline = db.Column(db.String(50))
 
     extra_fields = db.Column(db.String(200))
-
+    cgpa = db.Column(db.Float)
+    year = db.Column(db.Integer)
+    branches = db.Column(db.String(200))
+    job_type = db.Column(db.String(50))
     posted_by = db.Column(db.Integer, db.ForeignKey('user.id'))
 
 
@@ -139,6 +236,22 @@ class Event(db.Model):
     deadline = db.Column(db.String(50))
 
     posted_by = db.Column(db.Integer, db.ForeignKey('user.id'))
+
+def build_index():
+
+    jobs = Job.query.all()
+
+    if not jobs or model is None:
+        return None, jobs
+
+    texts = [f"{job.role} {job.skills}" for job in jobs]
+
+    embeddings = model.encode(texts)
+
+    index = faiss.IndexFlatL2(len(embeddings[0]))
+    index.add(embeddings)
+
+    return index, jobs
 
 
 # ================= HOME =================
@@ -237,6 +350,7 @@ def placement_data_js():
     return app.send_static_file('frontend/Placement/data.js')
 
 
+
 # ================= REGISTER =================
 
 @app.route("/register", methods=["POST"])
@@ -287,7 +401,7 @@ def register():
 
 # ================= LOGIN =================
 
-@app.route("/login", methods=["POST"])
+@app.route("/api/login", methods=["POST"])
 def login():
 
     data = request.json
@@ -367,6 +481,10 @@ def save_profile():
 
     user.skills = data.get("skills", user.skills)
 
+    
+    user.cgpa = data.get("cgpa", user.cgpa)
+    user.year = data.get("year", user.year)
+
     user.resume = data.get("resume", user.resume)
 
 
@@ -395,7 +513,15 @@ def get_profile():
 
         "skills": user.skills,
 
+        "year": user.year,
+
+        "cgpa": user.cgpa,
+
         "resume": user.resume
+
+        
+
+        
 
     })
 
@@ -434,7 +560,12 @@ def post_job():
 
     extra_fields=data.get("extra_fields", ""),
 
-    posted_by=user_id
+extra_fields=data.get("extra_fields", ""),
+cgpa=data.get("cgpa"),
+year=data.get("year"),
+branches=data.get("branches"),
+job_type=data.get("job_type"),
+posted_by=user_id
 )
 
 
@@ -481,6 +612,12 @@ def get_jobs():
             "role": job.role,
 
             "skills": job.skills,
+
+
+            "cgpa": job.cgpa,
+            "year": job.year,
+
+            "url": job.url,
 
             "deadline": job.deadline,
 
@@ -1254,6 +1391,105 @@ def recommended_jobs():
 
     return jsonify(recommended)
 
+
+
+@app.route("/ask-ai", methods=["POST"])
+@jwt_required()
+def ask_ai():
+
+    data = request.json
+    query = data.get("query", "").lower().strip()
+
+    user_id = get_jwt_identity()
+    user = User.query.get(int(user_id))
+    user_skills = (user.skills or "").lower().replace(",", " ").split()
+
+    jobs = Job.query.all()
+    if not jobs:
+        return jsonify({"answer": "No jobs available"})
+
+    ignore_words = ["jobs", "job", "roles", "role", "positions"]
+    query_words = [word for word in query.split() if word not in ignore_words]
+
+    results = []
+
+    for job in jobs:
+        skills = (job.skills or "").lower()
+        role = (job.role or "").lower()
+        text = f"{role} {skills}"
+
+        score = 0
+
+        for word in query_words:
+            if word in text:
+                score += 1
+
+        # 🔥 AI BOOST
+        if "ai" in query:
+            if any(x in skills for x in ["ml", "machine learning", "ai"]):
+                score += 3
+
+        # 🔥 WEB BOOST
+        if "web" in query:
+            if any(x in skills for x in [
+                "react", "html", "css", "javascript",
+                "node", "nodejs", "express",
+                "backend", "api"
+            ]):
+                score += 3
+
+        if "python" in query and "python" in skills:
+            score += 3
+
+        if "java" in query and "java" in skills:
+            score += 3
+
+        if score > 0:
+            results.append((job, score))
+
+    results = sorted(results, key=lambda x: x[1], reverse=True)
+    results = [job for job, _ in results]
+
+    if not results:
+        return jsonify({"answer": "No relevant jobs found"})
+
+    response = "Based on your query:<br><br>"
+
+    for job in results[:3]:
+
+        job_skills = (job.skills or "").lower().replace(",", " ").split()
+
+        matched = set(user_skills).intersection(job_skills)
+        missing = set(job_skills) - set(user_skills)
+
+        match_score = len(matched) / len(job_skills) if job_skills else 0
+
+        response += f"<b>{job.role} at {job.company}</b><br>"
+
+        # 🔥 COMPANY VIDEO
+        response += get_company_video(job.company) + "<br>"
+
+        response += f"Match: {round(match_score * 100, 2)}%<br>"
+
+        if matched:
+            response += f"✔ You have: {', '.join(matched)}<br>"
+
+        if missing:
+            response += f"❌ Missing: {', '.join(missing)}<br>"
+
+            course_suggestions = []
+            cert_suggestions = []
+
+            for skill in list(missing)[:2]:
+                course_suggestions.append(get_youtube_course(skill))
+                cert_suggestions.append(get_certification(skill))
+
+            response += f"📚 Courses: {', '.join(course_suggestions)}<br>"
+            response += f"🎓 Certifications: {', '.join(cert_suggestions)}<br>"
+
+        response += "<br>"
+
+    return jsonify({"answer": response})
 
 # ================= START SERVER =================
 

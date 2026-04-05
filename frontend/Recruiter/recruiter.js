@@ -43,43 +43,20 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 const jobData = {
 
-                    company:
-                        document.getElementById(
-                            'companyName'
-                        ).value,
+    company: document.getElementById('companyName').value,
+    role: document.getElementById('jobRole').value,
+    stipend: document.getElementById('stipend').value,
+    duration: document.getElementById('duration').value,
+    skills: document.getElementById('requiredSkills').value,
+    url: document.getElementById('redirectingLink').value,
+    deadline: document.getElementById('deadline').value,
 
-                    role:
-                        document.getElementById(
-                            'jobRole'
-                        ).value,
-
-                    stipend:
-                        document.getElementById(
-                            'stipend'
-                        ).value,
-
-                    duration:
-                        document.getElementById(
-                            'duration'
-                        ).value,
-
-                    skills:
-                        document.getElementById(
-                            'requiredSkills'
-                        ).value,
-
-                    url:
-                        document.getElementById(
-                            'redirectingLink'
-                        ).value,
-
-                    deadline:
-                        document.getElementById(
-                            'deadline'
-                        ).value
-
-                };
-
+    // 🔥 ADD THESE NEW FIELDS
+    cgpa: document.getElementById('cgpa').value,
+    year: document.getElementById('year').value,
+    branches: document.getElementById('branches').value,
+    job_type: document.getElementById('job_type').value
+};
 
                 const res = await fetch(
 
