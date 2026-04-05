@@ -5,7 +5,7 @@ document.querySelector("form").addEventListener("submit", function(e) {
     const password = document.getElementById("password").value;
     const role = document.getElementById("role").value;
 
-    fetch("http://127.0.0.1:5000/login", {
+    fetch("http://127.0.0.1:5000/api/login", {
         method: "POST",
         headers: {
             "Content-Type": "application/json"

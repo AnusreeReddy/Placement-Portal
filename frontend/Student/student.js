@@ -33,106 +33,170 @@ document.addEventListener("DOMContentLoaded", () => {
 
     .then(data => {
 
-        document.getElementById("profile-name").textContent =
-            data.name || "";
+    document.getElementById("profile-name").textContent =
+        data.name || "";
 
-        document.getElementById("profile-branch").textContent =
-            data.branch || "";
+    document.getElementById("profile-branch").textContent =
+        data.branch || "";
 
-        document.getElementById("profile-skills").textContent =
-            data.skills || "";
+    document.getElementById("profile-skills").textContent =
+        data.skills || "";
 
-        const welcome =
-            document.getElementById("profileNameElem");
+    document.getElementById("profile-cgpa").textContent =
+        data.cgpa || "";
 
-        if (welcome) {
+    document.getElementById("profile-year").textContent =
+        data.year || "";
 
-            welcome.textContent =
-                data.name || "Student";
+    const welcome =
+        document.getElementById("profileNameElem");
 
-        }
+    if (welcome) {
+        welcome.textContent =
+            data.name || "Student";
+    }
+    localStorage.setItem("cgpa", data.cgpa || 0);
+    localStorage.setItem("year", data.year || 0);
 
-    });
+});
 
 
 
     // ================= LOAD JOB OPENINGS =================
 
-    const opportunitiesList =
-        document.getElementById("opportunities-list");
+const opportunitiesList =
+    document.getElementById("opportunities-list");
 
+async function loadJobs() {
 
-    async function loadJobs() {
+    if (!opportunitiesList) return;
 
-        if (!opportunitiesList) return;
-
-        const res = await fetch(
-            "http://127.0.0.1:5000/jobs",
-            {
-                headers: {
-                    Authorization:
-                        "Bearer " + token
-                }
+    const res = await fetch(
+        "http://127.0.0.1:5000/jobs",
+        {
+            headers: {
+                Authorization: "Bearer " + token
             }
-        );
-
-        const jobs = await res.json();
-
-        opportunitiesList.innerHTML = "";
-
-        if (jobs.length === 0) {
-
-            opportunitiesList.innerHTML =
-                "<p>No openings available yet</p>";
-
-            return;
-
         }
+    );
 
-        jobs.forEach(job => {
+    const jobs = await res.json();
 
-            const card =
-                document.createElement("div");
+    opportunitiesList.innerHTML = "";
 
-            card.className =
-                "card opportunity-card" + (job.is_past ? " expired" : "");
-
-            // Calculate skill match percentage
-            const requiredSkills = job.skills.toLowerCase().split(',').map(s => s.trim());
-            const userSkills = (document.getElementById("profile-skills")?.textContent || "").toLowerCase().split(',').map(s => s.trim());
-            const matchedSkills = requiredSkills.filter(skill => userSkills.includes(skill)).length;
-            const matchPercentage = Math.round((matchedSkills / requiredSkills.length) * 100) || 0;
-
-            card.innerHTML = `
-
-                <h4>${job.role}</h4>
-
-                <p><strong>Company:</strong>
-                ${job.company}</p>
-
-                <p><strong>Skills:</strong>
-                ${job.skills}</p>
-
-                <p><strong>Deadline:</strong>
-                ${job.deadline}</p>
-
-                <p><strong>Skills Match:</strong> <span style="color: ${matchPercentage >= 75 ? '#28a745' : matchPercentage >= 50 ? '#ffc107' : '#dc3545'}">${matchPercentage}%</span></p>
-
-                ${job.is_past ? '<span class="deadline-indicator">Expired</span>' : '<span class="deadline-indicator far">Active</span>'}
-
-                <button onclick="window.open('${job.url}')">
-                Apply
-                </button>
-
-            `;
-
-            opportunitiesList.appendChild(card);
-
-        });
-
+    if (jobs.length === 0) {
+        opportunitiesList.innerHTML =
+            "<p>No openings available yet</p>";
+        return;
     }
 
-    loadJobs();
+    // ✅ GET USER DATA (VERY IMPORTANT)
+    const userCgpa = parseFloat(localStorage.getItem("cgpa")) || 0;
+    const userYear = parseInt(localStorage.getItem("year")) || 0;
+
+    jobs.forEach(job => {
+
+        const card = document.createElement("div");
+
+        card.className =
+            "card opportunity-card" + (job.is_past ? " expired" : "");
+
+        // ================= SKILL MATCH =================
+        const requiredSkills = (job.skills || "")
+            .toLowerCase()
+            .split(',')
+            .map(s => s.trim());
+
+        const userSkills = (document.getElementById("profile-skills")?.textContent || "")
+            .toLowerCase()
+            .split(',')
+            .map(s => s.trim());
+
+        const matchedSkills = requiredSkills.filter(skill =>
+            userSkills.includes(skill)
+        ).length;
+
+        const matchPercentage = Math.round(
+            (matchedSkills / requiredSkills.length) * 100
+        ) || 0;
+
+        // ================= ELIGIBILITY =================
+        let eligible = true;
+
+        
+        const userCgpa = parseFloat(localStorage.getItem("cgpa")) || 0;
+        const jobCgpa = parseFloat(job.cgpa) || 0;
+
+        if (jobCgpa > 0 && userCgpa < jobCgpa) {
+            eligible = false;
+        }
+
+        const userYear = parseInt(localStorage.getItem("year")) || 0;
+        const jobYear = parseInt(job.year) || 0;
+
+        if (jobYear > 0 && userYear !== jobYear) {
+            eligible = false;
+        }
+
+        const eligibilityText = eligible
+            ? "<span style='color:green'>✅ Eligible</span>"
+            : "<span style='color:red'>❌ Not Eligible</span>";
+
+        console.log("User CGPA:", userCgpa);
+        console.log("User Year:", userYear);
+        console.log("Job CGPA:", job.cgpa);
+        console.log("Job Year:", job.year);
+
+        // ================= UI =================
+        card.innerHTML = `
+
+            <h4>${job.role}</h4>
+
+            <p><strong>Company:</strong> ${job.company}</p>
+
+            <p><strong>Skills:</strong> ${job.skills}</p>
+
+            <p><strong>Deadline:</strong> ${job.deadline}</p>
+
+            <p><strong>CGPA Required:</strong> ${job.cgpa || "Not specified"}</p>
+
+            <p><strong>Passout Year:</strong> ${job.year || "Any"}</p>
+
+            <p><strong>Eligibility:</strong> ${eligibilityText}</p>
+
+            <p><strong>Skills Match:</strong>
+                <span style="color: ${
+                    matchPercentage >= 75 ? '#28a745' :
+                    matchPercentage >= 50 ? '#ffc107' :
+                    '#dc3545'
+                }">
+                    ${matchPercentage}%
+                </span>
+            </p>
+
+            ${job.is_past
+                ? '<span class="deadline-indicator">Expired</span>'
+                : '<span class="deadline-indicator far">Active</span>'
+            }
+
+            ${
+                eligible
+                ? `<button onclick="window.open('${job.url}')">Apply</button>`
+                : `<button disabled style="background:gray;cursor:not-allowed;">
+                        Not Eligible
+                   </button>`
+            }
+
+        `;
+
+        opportunitiesList.appendChild(card);
+
+    });
+
+}
+
+loadJobs();
+
 // ================= LOAD ML RECOMMENDED JOBS =================
 
 async function loadRecommendedJobs() {
@@ -316,6 +380,7 @@ loadRecommendedJobs();
 
     // ================= UPLOAD RESUME =================
 
+    
     const uploadResumeBtn =
         document.getElementById("upload-resume-btn");
 
@@ -329,6 +394,13 @@ loadRecommendedJobs();
     if (uploadResumeBtn && resumeUpload) {
 
         uploadResumeBtn.addEventListener("click", async () => {
+
+            const token = localStorage.getItem("token"); // ✅ MOVE HERE
+
+        if (!token) {
+            alert("User not logged in");
+            return;
+        }
 
             const file = resumeUpload.files[0];
 

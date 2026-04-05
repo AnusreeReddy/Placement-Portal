@@ -1,5 +1,5 @@
 import requests
-YOUTUBE_API_KEY = "AIzaSyDqGt3wFJz7YfqstMko4HyB9Kv5Zh_t-EM"
+YOUTUBE_API_KEY = "api"
 try:
     from sentence_transformers import SentenceTransformer
     import faiss
@@ -151,6 +151,10 @@ class User(db.Model):
 
     streak = db.Column(db.Integer, default=0)
 
+    cgpa = db.Column(db.Float)
+    year = db.Column(db.Integer)
+
+
 
 
 class Job(db.Model):
@@ -170,6 +174,11 @@ class Job(db.Model):
     url = db.Column(db.String(300))
 
     deadline = db.Column(db.String(50))
+
+    cgpa = db.Column(db.Float)
+    year = db.Column(db.Integer)
+    branches = db.Column(db.String(200))
+    job_type = db.Column(db.String(50))
 
     posted_by = db.Column(db.Integer, db.ForeignKey('user.id'))
 
@@ -388,7 +397,7 @@ def register():
 
 # ================= LOGIN =================
 
-@app.route("/login", methods=["POST"])
+@app.route("/api/login", methods=["POST"])
 def login():
 
     data = request.json
@@ -468,6 +477,10 @@ def save_profile():
 
     user.skills = data.get("skills", user.skills)
 
+    
+    user.cgpa = data.get("cgpa", user.cgpa)
+    user.year = data.get("year", user.year)
+
     user.resume = data.get("resume", user.resume)
 
 
@@ -496,7 +509,15 @@ def get_profile():
 
         "skills": user.skills,
 
+        "year": user.year,
+
+        "cgpa": user.cgpa,
+
         "resume": user.resume
+
+        
+
+        
 
     })
 
@@ -533,6 +554,12 @@ def post_job():
         url=data["url"],
 
         deadline=data["deadline"],
+
+        cgpa=data.get("cgpa"),
+        year=data.get("year"),
+        branches=data.get("branches"),
+        job_type=data.get("job_type"),
+
 
         posted_by=user_id
 
@@ -587,6 +614,9 @@ def get_jobs():
             "duration": job.duration,
 
             "skills": job.skills,
+
+            "cgpa": job.cgpa,
+            "year": job.year,
 
             "url": job.url,
 
