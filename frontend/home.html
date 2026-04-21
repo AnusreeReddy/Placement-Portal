@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PlacementHub - Your Career Platform</title>
+    <link rel="stylesheet" href="http://127.0.0.1:5000/style.css">
+    <style>
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 80px 40px;
+            text-align: center;
+            min-height: 500px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            margin-bottom: 16px;
+            font-weight: 900;
+            letter-spacing: -1px;
+        }
+
+        .hero p {
+            font-size: 1.3rem;
+            margin-bottom: 40px;
+            opacity: 0.95;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* Role Selection */
+        .role-selection {
+            padding: 80px 40px;
+            background: var(--bg);
+        }
+
+        .role-selection h2 {
+            text-align: center;
+            font-size: 2.4rem;
+            margin-bottom: 60px;
+            color: var(--text);
+        }
+
+        .roles-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 40px;
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        .role-card {
+            background: white;
+            border-radius: 24px;
+            padding: 40px 30px;
+            text-align: center;
+            box-shadow: 0 12px 48px rgba(34, 48, 60, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer;
+            border: 2px solid transparent;
+        }
+
+        .role-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 24px 72px rgba(34, 48, 60, 0.18);
+            border-color: rgba(102, 126, 234, 0.3);
+        }
+
+        .role-icon {
+            font-size: 4rem;
+            margin-bottom: 20px;
+        }
+
+        .role-card h3 {
+            font-size: 1.8rem;
+            margin-bottom: 12px;
+            color: var(--text);
+        }
+
+        .role-card p {
+            color: var(--text-muted);
+            line-height: 1.6;
+            margin-bottom: 24px;
+        }
+
+        .role-card button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 14px 32px;
+            border-radius: 999px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+            width: 100%;
+        }
+
+        .role-card button:hover {
+            transform: scale(1.05);
+        }
+
+        /* Features Section */
+        .features {
+            padding: 80px 40px;
+            background: white;
+        }
+
+        .features h2 {
+            text-align: center;
+            font-size: 2.4rem;
+            margin-bottom: 60px;
+            color: var(--text);
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        .feature-item {
+            padding: 30px;
+            background: rgba(102, 126, 234, 0.05);
+            border-radius: 16px;
+            border-left: 4px solid #667eea;
+        }
+
+        .feature-item h4 {
+            font-size: 1.2rem;
+            margin-bottom: 12px;
+            color: var(--text);
+        }
+
+        .feature-item p {
+            color: var(--text-muted);
+            line-height: 1.6;
+        }
+
+        /* Carousel */
+        .carousel-section {
+            padding: 80px 40px;
+            background: var(--bg);
+        }
+
+        .carousel-section h2 {
+            text-align: center;
+            font-size: 2.4rem;
+            margin-bottom: 40px;
+            color: var(--text);
+        }
+
+        .carousel {
+            max-width: 1000px;
+            margin: 0 auto;
+            position: relative;
+            overflow: hidden;
+            border-radius: 24px;
+            box-shadow: 0 20px 60px rgba(34, 48, 60, 0.15);
+        }
+
+        .carousel-inner {
+            display: flex;
+            transition: transform 0.5s ease;
+        }
+
+        .carousel-item {
+            min-width: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 60px 40px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 300px;
+        }
+
+        .carousel-item h3 {
+            font-size: 2rem;
+            margin-bottom: 16px;
+        }
+
+        .carousel-item p {
+            font-size: 1.1rem;
+            max-width: 600px;
+            opacity: 0.95;
+        }
+
+        .carousel-controls {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            margin-top: 20px;
+        }
+
+        .carousel-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.5);
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .carousel-dot.active {
+            background: white;
+        }
+
+        .carousel-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(255, 255, 255, 0.3);
+            color: white;
+            border: none;
+            padding: 12px 18px;
+            font-size: 1.5rem;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: background 0.3s ease;
+        }
+
+        .carousel-btn:hover {
+            background: rgba(255, 255, 255, 0.5);
+        }
+
+        .carousel-btn.prev {
+            left: 20px;
+        }
+
+        .carousel-btn.next {
+            right: 20px;
+        }
+
+        /* Footer */
+        footer {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+
+        footer p {
+            margin: 0;
+        }
+
+        /* Responsive */
+        @media (max-width: 900px) {
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+
+            .hero p {
+                font-size: 1.1rem;
+            }
+
+            .role-selection,
+            .features,
+            .carousel-section {
+                padding: 60px 20px;
+            }
+
+            .roles-grid,
+            .features-grid {
+                gap: 20px;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .hero {
+                padding: 40px 20px;
+                min-height: 300px;
+            }
+
+            .hero h1 {
+                font-size: 1.8rem;
+            }
+
+            .carousel-btn {
+                padding: 8px 12px;
+                font-size: 1.2rem;
+            }
+
+            .carousel-item {
+                padding: 40px 20px;
+                min-height: 200px;
+            }
+
+            .carousel-item h3 {
+                font-size: 1.5rem;
+            }
+
+            .carousel-item p {
+                font-size: 0.95rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<!-- Hero Section -->
+<div class="hero">
+    <h1>PlacementHub</h1>
+    <p>Your Complete Career Management Platform - Connect Opportunities with Talent</p>
+</div>
+
+<!-- Role Selection -->
+<div class="role-selection">
+    <h2>Get Started</h2>
+    <div class="roles-grid">
+        <div class="role-card">
+            <div class="role-icon">👨‍🎓</div>
+            <h3>Student</h3>
+            <p>Explore internships and placements, build your profile, and apply to opportunities that match your skills.</p>
+            <button onclick="selectRole('student')">Continue as Student</button>
+        </div>
+
+        <div class="role-card">
+            <div class="role-icon">🏢</div>
+            <h3>Recruiter</h3>
+            <p>Post job openings, review applications, and connect with talented students for your organization.</p>
+            <button onclick="selectRole('recruiter')">Continue as Recruiter</button>
+        </div>
+
+        <div class="role-card">
+            <div class="role-icon">👔</div>
+            <h3>Placement Officer</h3>
+            <p>Oversee the entire placement process, manage recruiter relationships, and monitor student placements.</p>
+            <button onclick="selectRole('placementOfficer')">Continue as Officer</button>
+        </div>
+    </div>
+</div>
+
+<!-- Features Section -->
+<div class="features">
+    <h2>Why PlacementHub?</h2>
+    <div class="features-grid">
+        <div class="feature-item">
+            <h4>🎯 Smart Matching</h4>
+            <p>AI-powered job recommendations based on your skills, CGPA, and preferences</p>
+        </div>
+        <div class="feature-item">
+            <h4>📊 Analytics Dashboard</h4>
+            <p>Track your applications, view acceptance rates, and monitor placement trends</p>
+        </div>
+        <div class="feature-item">
+            <h4>🏆 Achievements & Badges</h4>
+            <p>Earn badges and streak recognition for consistent engagement</p>
+        </div>
+        <div class="feature-item">
+            <h4>💼 Easy Posting</h4>
+            <p>Post job openings with custom requirements in minutes</p>
+        </div>
+        <div class="feature-item">
+            <h4>👥 Centralized Management</h4>
+            <p>Placement officers oversee all activities in one unified dashboard</p>
+        </div>
+        <div class="feature-item">
+            <h4>🔐 Secure & Private</h4>
+            <p>Your data is encrypted and protected with industry-standard security</p>
+        </div>
+    </div>
+</div>
+
+<!-- Carousel Section -->
+<div class="carousel-section">
+    <h2>Success Stories</h2>
+    <div class="carousel">
+        <div class="carousel-inner" id="carouselInner">
+            <div class="carousel-item">
+                <h3>300+ Students Placed</h3>
+                <p>Successfully connected talented students with leading companies across India</p>
+            </div>
+            <div class="carousel-item">
+                <h3>50+ Partner Companies</h3>
+                <p>Top recruiters trust PlacementHub for their campus hiring needs</p>
+            </div>
+            <div class="carousel-item">
+                <h3>95% Success Rate</h3>
+                <p>9 out of 10 students receive internship or placement offers within 3 months</p>
+            </div>
+            <div class="carousel-item">
+                <h3>4.8/5 Rating</h3>
+                <p>Students and recruiters rate their experience highly on our platform</p>
+            </div>
+        </div>
+        <button class="carousel-btn prev" onclick="carouselPrev()">&#10094;</button>
+        <button class="carousel-btn next" onclick="carouselNext()">&#10095;</button>
+    </div>
+    <div class="carousel-controls" id="carouselDots"></div>
+</div>
+
+<!-- Footer -->
+<footer>
+    <p>&copy; 2026 PlacementHub. All rights reserved. | Your gateway to career success</p>
+</footer>
+
+<script>
+    let currentCarouselIndex = 0;
+
+    function selectRole(role) {
+        sessionStorage.setItem('selectedRole', role);
+        window.location.href = '/login';
+    }
+
+    function carouselNext() {
+        const items = document.querySelectorAll('.carousel-item').length;
+        currentCarouselIndex = (currentCarouselIndex + 1) % items;
+        updateCarousel();
+    }
+
+    function carouselPrev() {
+        const items = document.querySelectorAll('.carousel-item').length;
+        currentCarouselIndex = (currentCarouselIndex - 1 + items) % items;
+        updateCarousel();
+    }
+
+    function updateCarousel() {
+        const inner = document.getElementById('carouselInner');
+        inner.style.transform = `translateX(-${currentCarouselIndex * 100}%)`;
+        updateDots();
+    }
+
+    function updateDots() {
+        const items = document.querySelectorAll('.carousel-item').length;
+        const dotsContainer = document.getElementById('carouselDots');
+        dotsContainer.innerHTML = '';
+        
+        for (let i = 0; i < items; i++) {
+            const dot = document.createElement('div');
+            dot.className = `carousel-dot ${i === currentCarouselIndex ? 'active' : ''}`;
+            dot.onclick = () => {
+                currentCarouselIndex = i;
+                updateCarousel();
+            };
+            dotsContainer.appendChild(dot);
+        }
+    }
+
+    // Auto-advance carousel every 5 seconds
+    setInterval(carouselNext, 5000);
+
+    // Initialize carousel dots
+    updateDots();
+</script>
+
+</body>
+</html>

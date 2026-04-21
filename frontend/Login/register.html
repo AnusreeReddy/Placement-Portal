@@ -3,39 +3,224 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Register</title>
+    <title>Register - PlacementHub</title>
     <link rel="stylesheet" href="http://127.0.0.1:5000/style.css">
     <style>
-        body { font-family: Arial, sans-serif; background-color: #f4f4f4; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
-        .register-container { background-color: #fff; padding: 40px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); text-align: center; width: 350px; }
-        .register-container h2 { margin-bottom: 20px; color: #333; }
-        .input-group { margin-bottom: 15px; text-align: left; }
-        .input-group label { display: block; margin-bottom: 5px; font-weight: bold; }
-        .input-group input, .input-group select { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
-        .input-group button { width: 100%; padding: 10px; background-color: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 16px; }
-        .input-group button:hover { background-color: #0056b3; }
-        .message { margin-top: 15px; color: #dc3545; }
-        .back-link { display: block; margin-top: 20px; color: #007bff; text-decoration: none; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 2rem;
+        }
+
+        .register-container {
+            background: white;
+            border-radius: 18px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            padding: 3rem 2rem;
+            width: 100%;
+            max-width: 450px;
+            animation: slideInUp 0.6s ease-out;
+        }
+
+        .register-container h2 {
+            margin-bottom: 1rem;
+            color: #333;
+            text-align: center;
+            font-size: 1.8rem;
+        }
+
+        .role-info {
+            text-align: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid var(--border);
+        }
+
+        .role-info p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
+
+        .input-group {
+            margin-bottom: 1.2rem;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #333;
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+
+        .input-group input,
+        .input-group select {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1.5px solid var(--border);
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.3s;
+            font-family: inherit;
+        }
+
+        .input-group input:focus,
+        .input-group select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .input-group button {
+            width: 100%;
+            padding: 0.85rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.3s;
+            margin-top: 1rem;
+        }
+
+        .input-group button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .input-group button:active {
+            transform: translateY(0);
+        }
+
+        #passwordStrength {
+            margin-top: 0.5rem;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .strength-weak {
+            color: #d9534f;
+        }
+
+        .strength-fair {
+            color: #f0ad4e;
+        }
+
+        .strength-good {
+            color: #5cb85c;
+        }
+
+        #registerMessage {
+            margin-top: 1rem;
+            padding: 0.75rem;
+            border-radius: 8px;
+            text-align: center;
+            font-size: 0.95rem;
+            font-weight: 500;
+        }
+
+        .message-success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .message-error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .back-link {
+            display: block;
+            text-align: center;
+            margin-top: 1.5rem;
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        .back-link:hover {
+            color: #764ba2;
+        }
+
+        .login-link {
+            text-align: center;
+            margin-top: 1rem;
+            color: #666;
+        }
+
+        .login-link a {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .login-link a:hover {
+            text-decoration: underline;
+        }
+
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 480px) {
+            .register-container {
+                padding: 2rem 1.5rem;
+            }
+
+            .register-container h2 {
+                font-size: 1.5rem;
+            }
+        }
     </style>
 </head>
 <body>
     <div class="register-container">
-        <h2>Create an Account</h2>
+        <h2>🎓 Create Your Account</h2>
+        
+        <div class="role-info">
+            <p id="selectedRoleDisplay">Join as Student</p>
+        </div>
+
         <form id="registerForm">
             <div class="input-group">
                 <label for="name">Full Name</label>
-                <input type="text" id="name" required>
+                <input type="text" id="name" placeholder="Enter your full name" required>
             </div>
+
             <div class="input-group">
                 <label for="email">Email Address</label>
-                <input type="email" id="email" required>
+                <input type="email" id="email" placeholder="your.email@example.com" required>
             </div>
+
             <div class="input-group">
                 <label for="password">Password</label>
-                <input type="password" id="password" required>
-                <div id="passwordStrength" class="message"></div>
+                <input type="password" id="password" placeholder="Create a strong password" required>
+                <div id="passwordStrength"></div>
             </div>
-            <div class="input-group">
+
+            <div class="input-group" style="display: none;">
                 <label for="role">Role</label>
                 <select id="role" required>
                     <option value="" disabled selected>Select Your Role</option>
@@ -44,13 +229,62 @@
                     <option value="placementOfficer">Placement Officer</option>
                 </select>
             </div>
+
             <div class="input-group">
-                <button type="submit">Register</button>
+                <button type="submit">Create Account</button>
             </div>
         </form>
-        <div id="registerMessage" class="message"></div>
-        <a href="http://127.0.0.1:5000/login" class="back-link">&larr; Back to Login</a>
+
+        <div id="registerMessage"></div>
+
+        <div class="back-link">
+            <a href="http://127.0.0.1:5000/">← Back to Home</a>
+        </div>
+
+        <div class="login-link">
+            Already have an account? <a href="http://127.0.0.1:5000/login">Login here</a>
+        </div>
     </div>
+
+    <script>
+        // Load selected role from sessionStorage on page load
+        window.addEventListener('DOMContentLoaded', function() {
+            const selectedRole = sessionStorage.getItem('selectedRole');
+            if (selectedRole) {
+                document.getElementById('role').value = selectedRole;
+                updateRoleDisplay(selectedRole);
+            }
+        });
+
+        function updateRoleDisplay(role) {
+            const roleMap = {
+                'student': '👨‍🎓 Join as Student',
+                'recruiter': '💼 Join as Recruiter',
+                'placementOfficer': '📋 Join as Placement Officer'
+            };
+            document.getElementById('selectedRoleDisplay').textContent = roleMap[role] || role;
+        }
+
+        // Password strength indicator
+        document.getElementById('password').addEventListener('input', function() {
+            const password = this.value;
+            const strengthDiv = document.getElementById('passwordStrength');
+
+            if (password.length < 6) {
+                strengthDiv.textContent = '⚠️ Password too short (minimum 6 characters)';
+                strengthDiv.className = 'strength-weak';
+            } else if (password.length < 8 || !/[A-Z]/.test(password) || !/[0-9]/.test(password)) {
+                strengthDiv.textContent = '⚠️ Fair - Add uppercase letters and numbers';
+                strengthDiv.className = 'strength-fair';
+            } else if (/[!@#$%^&*]/.test(password)) {
+                strengthDiv.textContent = '✓ Strong password';
+                strengthDiv.className = 'strength-good';
+            } else {
+                strengthDiv.textContent = '✓ Good password';
+                strengthDiv.className = 'strength-good';
+            }
+        });
+    </script>
     <script src="http://127.0.0.1:5000/register.js"></script>
 </body>
 </html>

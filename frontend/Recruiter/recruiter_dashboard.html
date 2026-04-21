@@ -7,33 +7,180 @@
     <link rel="stylesheet" href="/style.css">
     <style>
         /* General Layout */
-        body { font-family: Arial, sans-serif; background-color: #f4f4f4; color: #333; margin: 0; }
-        header { background-color: #007bff; color: white; padding: 20px; text-align: center; }
-        .container { display: flex; max-width: 1200px; margin: 20px auto; background-color: #fff; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); border-radius: 8px; overflow: hidden; }
-        .sidebar { width: 250px; padding: 20px; background-color: #e9ecef; border-right: 1px solid #ccc; }
-        .main-nav ul { list-style: none; padding: 0; }
-        .main-nav li { margin-bottom: 10px; }
-        .main-nav a { text-decoration: none; color: #333; display: block; padding: 10px; border-radius: 5px; }
-        .main-nav a:hover { background-color: #ddd; }
-        .logout-btn { display: block; padding: 10px; background-color: #dc3545; color: white; border-radius: 5px; text-align: center; margin-top: 20px; text-decoration: none; }
-        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f7fa;
+            color: #333;
+        }
+
+        header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 2rem;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        header h1 {
+            font-size: 2rem;
+            margin: 0;
+        }
+
+        .container {
+            display: flex;
+            max-width: 1200px;
+            margin: 20px auto;
+            background-color: #fff;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            border-radius: 16px;
+            overflow: hidden;
+        }
+
+        .sidebar {
+            width: 250px;
+            padding: 20px;
+            background: linear-gradient(135deg, #f5f7fa 0%, #e8ecf1 100%);
+            border-right: 1px solid #e0e6ed;
+        }
+
+        .main-nav ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .main-nav li {
+            margin-bottom: 10px;
+        }
+
+        .main-nav a {
+            text-decoration: none;
+            color: #555;
+            display: block;
+            padding: 10px 12px;
+            border-radius: 8px;
+            transition: all 0.3s;
+            font-weight: 500;
+        }
+
+        .main-nav a:hover {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .logout-btn {
+            display: block;
+            padding: 10px 12px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 50px;
+            text-align: center;
+            margin-top: 20px;
+            text-decoration: none;
+            transition: all 0.3s;
+            font-weight: 600;
+        }
+
+        .logout-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        }
+
         /* Content Sections */
-        .content { flex-grow: 1; padding: 20px; }
-        section { margin-bottom: 30px; }
-        h2 { border-bottom: 2px solid #007bff; padding-bottom: 10px; margin-bottom: 20px; }
-        
+        .content {
+            flex-grow: 1;
+            padding: 30px;
+        }
+
+        section {
+            margin-bottom: 30px;
+        }
+
+        h2 {
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
         /* Forms */
-        form { background: #f9f9f9; padding: 20px; border-radius: 8px; }
-        .input-group { margin-bottom: 15px; }
-        .input-group label { display: block; margin-bottom: 5px; font-weight: bold; }
-        .input-group input { width: calc(100% - 22px); padding: 10px; border: 1px solid #ccc; border-radius: 4px; }
-        button { padding: 10px 20px; background-color: #28a745; color: white; border: none; border-radius: 5px; cursor: pointer; }
-        button:hover { background-color: #218838; }
-        
+        form {
+            background: #f9f9f9;
+            padding: 20px;
+            border-radius: 12px;
+            border: 1px solid #e0e6ed;
+        }
+
+        .input-group {
+            margin-bottom: 15px;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+        }
+
+        .input-group input {
+            width: calc(100% - 22px);
+            padding: 10px;
+            border: 1px solid #e0e6ed;
+            border-radius: 8px;
+            transition: all 0.3s;
+        }
+
+        .input-group input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        button {
+            padding: 10px 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        }
+
         /* Lists */
-        .job-card, .student-card { background-color: #e9ecef; border: 1px solid #ddd; padding: 15px; border-radius: 8px; margin-bottom: 15px; }
-        .student-list { display: flex; flex-wrap: wrap; gap: 20px; }
-        .student-card { min-width: 300px; }
+        .job-card, .student-card {
+            background-color: #fff;
+            border: 1px solid #e0e6ed;
+            padding: 15px;
+            border-radius: 12px;
+            margin-bottom: 15px;
+            transition: all 0.3s;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
+
+        .job-card:hover, .student-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 24px rgba(102, 126, 234, 0.15);
+        }
+
+        .student-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .student-card {
+            min-width: 300px;
+        }
     </style>
 </head>
 <body>
@@ -48,7 +195,7 @@
                     <li><a href="#post-hackathon">Post Hackathon</a></li>
                     <li><a href="#post-event">Post Event</a></li>
                     <li><a href="#my-openings">My Openings</a></li>
-                    <li><a href="#student-database">View Student Profiles</a></li>
+                    <li><a href="#student-database">View Applications</a></li>
                 </ul>
             </nav>
             <a href="http://127.0.0.1:5000/login" class="logout-btn" id="logoutBtn">Logout</a>
@@ -108,6 +255,21 @@
                                 <option value="job">Full-Time Job</option>
                             </select>
                     </div>
+
+                    <h3>Custom Requirements</h3>
+
+<div id="dynamicFieldsContainer"></div>
+
+<input type="text" id="fieldName" placeholder="Field name">
+
+<select id="fieldType">
+<option value="text">Text</option>
+<option value="number">Number</option>
+</select>
+
+<button type="button" onclick="addField()">
+Add Requirement
+</button>
                     
                     <button type="submit">Post Opening</button>
                 </form>
@@ -182,7 +344,7 @@
             </section>
             
             <section id="student-database">
-                <h2>Student Database</h2>
+                <h2>Applications Received</h2>
                 <div class="student-list" id="student-list">
                     </div>
             </section>

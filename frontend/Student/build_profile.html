@@ -33,20 +33,24 @@
                 <input type="text" id="branch" required>
             </div>
             <div class="input-group">
+                <label for="roll_no">Roll Number</label>
+                <input type="text" id="roll_no" required>
+            </div>
+            <div class="input-group">
+                <label>CGPA</label>
+                <input type="number" step="0.1" id="cgpa" placeholder="e.g. 8.2" required>
+            </div>
+            <div class="input-group">
+                <label>Year of Passout</label>
+                <input type="number" id="year" placeholder="e.g. 2025" required>
+            </div>
+            <div class="input-group">
                 <label for="skills">Skills (comma-separated)</label>
                 <textarea id="skills" rows="3" placeholder="e.g., Python, SQL, AWS, Machine Learning" required></textarea>
             </div>
             <div class="input-group">
                 <label for="resume">Upload Resume</label>
                 <input type="file" id="resume" accept=".pdf,.doc,.docx" required>
-            </div>
-            <div class="input-group">
-                <label>Year of Passout</label>
-                <input type="number" id="year" placeholder="e.g. 2025">
-            </div>
-            <div class="input-group">
-                <label>CGPA</label>
-                <input type="number" step="0.1" id="cgpa" placeholder="e.g. 8.2">
             </div>
             <button type="submit" class="save-btn">Save Profile</button>
             <button type="button" class="back-btn" onclick="goBack()">Back</button>
@@ -73,6 +77,7 @@ fetch("http://127.0.0.1:5000/profile", {
 .then(data => {
     if (data.name) document.getElementById("name").value = data.name;
     if (data.branch) document.getElementById("branch").value = data.branch;
+    if (data.roll_no) document.getElementById("roll_no").value = data.roll_no;
     if (data.skills) document.getElementById("skills").value = data.skills;
     if (data.cgpa) document.getElementById("cgpa").value = data.cgpa;
     if (data.year) document.getElementById("year").value = data.year;
@@ -85,6 +90,7 @@ profileForm.addEventListener("submit", function(e){
 
     const name = document.getElementById("name").value;
     const branch = document.getElementById("branch").value;
+    const roll_no = document.getElementById("roll_no").value;
     const skills = document.getElementById("skills").value;
     const cgpa = document.getElementById("cgpa").value;
     const year = document.getElementById("year").value;
@@ -117,6 +123,7 @@ profileForm.addEventListener("submit", function(e){
         const profile = {
             name: name,
             branch: branch,
+            roll_no: roll_no,
             skills: skills,
             cgpa: cgpa,
             year: year,

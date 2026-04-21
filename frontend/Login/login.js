@@ -1,3 +1,26 @@
+// Load selected role from sessionStorage on page load
+window.addEventListener('DOMContentLoaded', function() {
+    const selectedRole = sessionStorage.getItem('selectedRole');
+    if (selectedRole) {
+        document.getElementById('role').value = selectedRole;
+        updateRoleDisplay(selectedRole);
+    }
+});
+
+// Update role display when role selection changes
+document.getElementById('role').addEventListener('change', function() {
+    updateRoleDisplay(this.value);
+});
+
+function updateRoleDisplay(role) {
+    const roleMap = {
+        'student': 'Student',
+        'recruiter': 'Recruiter',
+        'placementOfficer': 'Placement Officer'
+    };
+    document.getElementById('selectedRoleDisplay').textContent = roleMap[role] || role;
+}
+
 document.querySelector("form").addEventListener("submit", function(e) {
     e.preventDefault();
 
@@ -23,6 +46,7 @@ document.querySelector("form").addEventListener("submit", function(e) {
         if (data.token) {
             localStorage.setItem("token", data.token);
             localStorage.setItem("role", data.role);
+            sessionStorage.removeItem('selectedRole'); // Clear the role selection
 
             // Redirect after a small delay to ensure localStorage is saved
             setTimeout(() => {

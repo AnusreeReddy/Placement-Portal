@@ -6,28 +6,330 @@
     <title>Placement Officer Dashboard</title>
     <link rel="stylesheet" href="/style.css">
     <style>
-        body { font-family: Arial, sans-serif; background-color: #f4f4f4; margin: 0; padding: 0; }
-        header { background-color: #007bff; color: white; padding: 1rem; text-align: center; }
-        .container { display: flex; max-width: 1200px; margin: 20px auto; background-color: #fff; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); border-radius: 8px; overflow: hidden; }
-        .sidebar { width: 250px; padding: 20px; background-color: #e9ecef; border-right: 1px solid #ccc; }
-        .main-nav ul { list-style: none; padding: 0; }
-        .main-nav li { margin-bottom: 10px; }
-        .main-nav a { text-decoration: none; color: #333; display: block; padding: 10px; border-radius: 5px; }
-        .main-nav a:hover { background-color: #ddd; }
-        .content { flex-grow: 1; padding: 20px; }
-        form { background-color: #f9f9f9; padding: 20px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05); }
-        .input-group { margin-bottom: 15px; }
-        .input-group label { display: block; margin-bottom: 5px; font-weight: bold; }
-        .input-group input, .input-group textarea { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px; box-sizing: border-box; }
-        .post-success-message { background-color: #d4edda; color: #155724; padding: 15px; border-radius: 5px; margin-bottom: 20px; text-align: center; display: none; }
-        .job-card { background-color: #e9f5ff; border: 1px solid #cce5ff; padding: 15px; border-radius: 8px; margin-bottom: 15px; }
-        .application-list { list-style: none; padding: 0; }
-        .application-item { background-color: #f2f2f2; border: 1px solid #ddd; padding: 15px; margin-bottom: 10px; border-radius: 8px; }
-        .logout-btn { text-align: center; margin-top: auto; padding: 10px; background-color: #dc3545; color: white; border-radius: 5px; text-decoration: none; display: block; }
-        .review-btn { background-color: #007bff; color: white; border: none; padding: 8px 12px; border-radius: 5px; cursor: pointer; margin-top: 10px; }
-        .review-btn:hover { background-color: #0056b3; }
-        .applicant-list { list-style: none; padding: 0; margin-top: 10px; display: none; }
-        .applicant-item { background-color: #f9f9f9; border: 1px solid #ddd; padding: 10px; border-radius: 5px; margin-bottom: 5px; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f7fa;
+        }
+
+        header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 2rem;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        header h1 {
+            font-size: 2rem;
+            margin: 0;
+        }
+
+        .container {
+            display: flex;
+            max-width: 1200px;
+            margin: 20px auto;
+            background-color: #fff;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            border-radius: 16px;
+            overflow: hidden;
+        }
+
+        .sidebar {
+            width: 250px;
+            padding: 20px;
+            background: linear-gradient(135deg, #f5f7fa 0%, #e8ecf1 100%);
+            border-right: 1px solid #e0e6ed;
+        }
+
+        .main-nav ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .main-nav li {
+            margin-bottom: 10px;
+        }
+
+        .main-nav a {
+            text-decoration: none;
+            color: #555;
+            display: block;
+            padding: 10px 12px;
+            border-radius: 8px;
+            transition: all 0.3s;
+            font-weight: 500;
+        }
+
+        .main-nav a:hover {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .content {
+            flex-grow: 1;
+            padding: 30px;
+        }
+
+        h2 {
+            color: #333;
+            margin-bottom: 1.5rem;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 1rem;
+        }
+
+        form {
+            background-color: #f9f9f9;
+            padding: 20px;
+            border-radius: 12px;
+            border: 1px solid #e0e6ed;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .input-group {
+            margin-bottom: 15px;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+        }
+
+        .input-group input,
+        .input-group textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #e0e6ed;
+            border-radius: 8px;
+            box-sizing: border-box;
+            transition: all 0.3s;
+        }
+
+        .input-group input:focus,
+        .input-group textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .post-success-message {
+            background-color: #d4edda;
+            color: #155724;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            text-align: center;
+            display: none;
+            border: 1px solid #c3e6cb;
+        }
+
+        .job-card {
+            background-color: #f0f4ff;
+            border: 1px solid #e0e6ed;
+            padding: 15px;
+            border-radius: 12px;
+            margin-bottom: 15px;
+            border-left: 4px solid #667eea;
+            transition: all 0.3s;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
+
+        .job-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 24px rgba(102, 126, 234, 0.15);
+        }
+
+        .application-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .application-item {
+            background-color: #fff;
+            border: 1px solid #e0e6ed;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 8px;
+            transition: all 0.3s;
+        }
+
+        .application-item:hover {
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        }
+
+        .logout-btn {
+            text-align: center;
+            margin-top: 20px;
+            padding: 10px 12px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 50px;
+            text-decoration: none;
+            display: block;
+            transition: all 0.3s;
+            font-weight: 600;
+        }
+
+        .logout-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .review-btn, .view-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 50px;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: all 0.3s;
+            font-weight: 600;
+        }
+
+        .review-btn:hover, .view-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+        }
+
+        .applicant-list {
+            list-style: none;
+            padding: 0;
+            margin-top: 10px;
+            display: none;
+        }
+
+        .applicant-item {
+            background-color: #f9f9f9;
+            border: 1px solid #e0e6ed;
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 5px;
+        }
+
+        .tab-buttons {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .tab-btn {
+            padding: 10px 20px;
+            background-color: #e0e6ed;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .tab-btn.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .tab-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .student-card {
+            background-color: #fff;
+            border: 1px solid #e0e6ed;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 12px;
+            border-left: 4px solid #667eea;
+            transition: all 0.3s;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
+
+        .student-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 24px rgba(102, 126, 234, 0.15);
+        }
+
+        .student-card h4,
+        .job-card h4 {
+            margin: 0 0 10px 0;
+            color: #333;
+        }
+
+        .student-card p,
+        .job-card p {
+            margin: 5px 0;
+            color: #666;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,.5);
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            max-width: 600px;
+            max-height: 80%;
+            overflow-y: auto;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+        }
+
+        .modal-close {
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            color: #999;
+            transition: color 0.3s;
+        }
+
+        .modal-close:hover {
+            color: #333;
+        }
+
+        button {
+            padding: 10px 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        }
     </style>
 </head>
 <body>
@@ -38,15 +340,38 @@
         <aside class="sidebar">
             <nav class="main-nav">
                 <ul>
+                    <li><a href="#view-students">View Students</a></li>
+                    <li><a href="#view-jobs">View Job Postings</a></li>
                     <li><a href="#post-opening">Post an Opening</a></li>
                     <li><a href="#review-applications">Review Applications</a></li>
                     <li><a href="#posted-openings">Posted Openings</a></li>
                     <li><a href="manage_recruiters.html">Manage Recruiters</a></li>
                 </ul>
             </nav>
-            <a href="../Login/login.html" class="logout-btn">Logout</a>
+            <a href="../Login/login.html" class="logout-btn" id="logoutBtn">Logout</a>
         </aside>
         <main class="content">
+
+            <!-- VIEW STUDENTS SECTION -->
+            <section id="view-students">
+                <h2>All Students</h2>
+                <div class="tab-buttons">
+                    <button class="tab-btn active" onclick="switchStudentView('list')">List View</button>
+                    <button class="tab-btn" onclick="switchStudentView('search')">Search Student</button>
+                </div>
+                <div id="students-list-container"></div>
+            </section>
+
+            <hr style="margin: 40px 0;">
+
+            <!-- VIEW JOBS SECTION -->
+            <section id="view-jobs">
+                <h2>All Job Postings</h2>
+                <div id="jobs-list-container"></div>
+            </section>
+
+            <hr style="margin: 40px 0;">
+
             <section id="post-opening">
                 <h2>Post a Job/Internship Opening</h2>
                 <div id="post-success-message" class="post-success-message">Opening posted successfully!</div>
@@ -100,6 +425,25 @@
             </section>
         </main>
     </div>
-    <script src="http://127.0.0.1:5000/placement.js"></script>
+
+    <!-- STUDENT DETAILS MODAL -->
+    <div class="modal" id="studentModal">
+        <div class="modal-content">
+            <span class="modal-close" onclick="closeStudentModal()">&times;</span>
+            <h3>Student Details</h3>
+            <div id="studentDetailsContent"></div>
+        </div>
+    </div>
+
+    <!-- JOB APPLICATIONS MODAL -->
+    <div class="modal" id="jobModal">
+        <div class="modal-content">
+            <span class="modal-close" onclick="closeJobModal()">&times;</span>
+            <h3>Job Applicants</h3>
+            <div id="jobApplicationsContent"></div>
+        </div>
+    </div>
+
+    <script src="http://127.0.0.1:5000/placement_officer.js"></script>
 </body>
 </html>

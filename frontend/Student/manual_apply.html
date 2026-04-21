@@ -3,41 +3,150 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Manual Application</title>
+    <title>Apply for Position</title>
+    <link rel="stylesheet" href="/style.css">
     <style>
-        body { font-family: Arial, sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; background-color: #f0f2f5; margin: 0; }
-        .form-container { background-color: white; padding: 30px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); width: 400px; }
-        h2 { text-align: center; color: #333; margin-bottom: 20px; }
+        body { font-family: Arial, sans-serif; background-color: #f4f4f9; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; padding: 20px; }
+        .form-container { background-color: white; padding: 40px; border-radius: 10px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); width: 100%; max-width: 700px; }
+        h2 { text-align: center; color: #004d99; margin-bottom: 30px; }
+        .section { margin-bottom: 30px; }
+        .section-title { font-weight: bold; font-size: 1.1em; color: #333; margin-bottom: 12px; padding-bottom: 8px; border-bottom: 2px solid #007bff; }
         .input-group { margin-bottom: 15px; }
-        .input-group label { display: block; margin-bottom: 5px; font-weight: bold; }
-        .input-group input, .input-group textarea { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px; box-sizing: border-box; }
-        .submit-btn { width: 100%; padding: 10px; background-color: #28a745; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 16px; margin-top: 10px; }
+        .input-group label { display: block; margin-bottom: 5px; font-weight: bold; color: #555; }
+        .input-group input, .input-group textarea { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 5px; box-sizing: border-box; font-family: inherit; }
+        .input-group input:focus, .input-group textarea:focus { outline: none; border-color: #007bff; box-shadow: 0 0 5px rgba(0, 123, 255, 0.2); }
+        .input-group input[disabled] { background-color: #e9e9e9; cursor: not-allowed; }
+        .required::after { content: ' *'; color: #dc3545; font-weight: bold; }
+        .submit-btn { width: 100%; padding: 12px; background-color: #28a745; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 16px; font-weight: bold; margin-top: 20px; transition: background-color 0.3s; }
+        .submit-btn:hover { background-color: #218838; }
+        .back-btn { display: inline-block; margin-top: 10px; padding: 10px 20px; background-color: #6c757d; color: white; text-decoration: none; border-radius: 5px; text-align: center; cursor: pointer; }
+        .back-btn:hover { background-color: #5a6268; }
     </style>
 </head>
 <body>
     <div class="form-container">
-        <h2>Manual Application Form</h2>
+        <h2>Apply for Position</h2>
         <form id="manualApplicationForm">
-            <div class="input-group">
-                <label for="name">Full Name</label>
-                <input type="text" id="name" required>
+            <div class="section">
+                <div class="section-title">Your Information (Required)</div>
+                <div class="input-group">
+                    <label for="name" class="required">Full Name</label>
+                    <input type="text" id="name" name="name" disabled>
+                </div>
+                <div class="input-group">
+                    <label for="branch" class="required">Branch</label>
+                    <input type="text" id="branch" name="branch" disabled>
+                </div>
+                <div class="input-group">
+                    <label for="roll_no" class="required">Roll Number</label>
+                    <input type="text" id="roll_no" name="roll_no" disabled>
+                </div>
+                <div class="input-group">
+                    <label for="cgpa" class="required">CGPA</label>
+                    <input type="number" id="cgpa" name="cgpa" disabled step="0.1">
+                </div>
             </div>
-            <div class="input-group">
-                <label for="email">Email Address</label>
-                <input type="email" id="email" required>
-            </div>
-            <div class="input-group">
-                <label for="coverLetter">Cover Letter</label>
-                <textarea id="coverLetter" rows="5" required></textarea>
+            <div id="customRequirementsSection" class="section" style="display:none;">
+                <div class="section-title">Additional Requirements</div>
+                <div id="customFields"></div>
             </div>
             <button type="submit" class="submit-btn">Submit Application</button>
+            <button type="button" class="back-btn" onclick="window.location.href='/student/dashboard'" style="margin-left: 10px;">Cancel</button>
         </form>
     </div>
     <script>
-        document.getElementById('manualApplicationForm').addEventListener('submit', function(e) {
+        const token = localStorage.getItem("token");
+        const jobId = new URLSearchParams(window.location.search).get('job_id');
+
+        if (!token) {
+            alert("Please login first");
+            window.location.href = "/login";
+        }
+
+        // Load student profile
+        fetch("http://127.0.0.1:5000/profile", {
+            headers: { "Authorization": "Bearer " + token }
+        })
+        .then(res => res.json())
+        .then(data => {
+            document.getElementById("name").value = data.name || "";
+            document.getElementById("branch").value = data.branch || "";
+            document.getElementById("roll_no").value = data.roll_no || "";
+            document.getElementById("cgpa").value = data.cgpa || "";
+        })
+        .catch(err => console.error("Could not load profile:", err));
+
+        // Load job details if job_id is provided
+        if (jobId) {
+            fetch("http://127.0.0.1:5000/jobs", {
+                headers: { "Authorization": "Bearer " + token }
+            })
+            .then(res => res.json())
+            .then(jobs => {
+                const job = jobs.find(j => j.id == jobId);
+                if (job && job.extra_fields && Object.keys(job.extra_fields).length > 0) {
+                    const section = document.getElementById("customRequirementsSection");
+                    const customFields = document.getElementById("customFields");
+                    section.style.display = "block";
+                    
+                    Object.entries(job.extra_fields).forEach(([name, type]) => {
+                        const inputType = type === 'number' ? 'number' : type === 'email' ? 'email' : 'text';
+                        const fieldDiv = document.createElement('div');
+                        fieldDiv.className = 'input-group';
+                        fieldDiv.innerHTML = `
+                            <label for="field-${name}" class="required">${name}</label>
+                            <input type="${inputType}" id="field-${name}" name="${name}" required placeholder="Enter ${name}">
+                        `;
+                        customFields.appendChild(fieldDiv);
+                    });
+                }
+            })
+            .catch(err => console.error("Could not load jobs:", err));
+        }
+
+        document.getElementById('manualApplicationForm').addEventListener('submit', async function(e) {
             e.preventDefault();
-            alert("Your manual application has been submitted!");
-            window.location.href = 'your_applications.html';
+            
+            if (!jobId) {
+                alert("No job selected");
+                return;
+            }
+
+            // Collect all form data
+            const extra_data = {
+                name: document.getElementById("name").value,
+                branch: document.getElementById("branch").value,
+                roll_no: document.getElementById("roll_no").value,
+                cgpa: document.getElementById("cgpa").value
+            };
+
+            // Add custom fields
+            const customFields = document.getElementById("customFields").querySelectorAll('input');
+            customFields.forEach(field => {
+                extra_data[field.name] = field.value;
+            });
+
+            try {
+                const response = await fetch("http://127.0.0.1:5000/apply-job", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": "Bearer " + token
+                    },
+                    body: JSON.stringify({ job_id: jobId, extra_data })
+                });
+
+                const data = await response.json();
+                if (response.ok) {
+                    alert("Application submitted successfully!");
+                    window.location.href = "/student/applications";
+                } else {
+                    alert("Error: " + (data.error || "Could not submit application"));
+                }
+            } catch (err) {
+                console.error(err);
+                alert("Error submitting application: " + err.message);
+            }
         });
     </script>
 </body>

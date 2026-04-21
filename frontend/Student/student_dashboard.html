@@ -10,31 +10,102 @@ content="width=device-width, initial-scale=1.0">
 <link rel="stylesheet" href="/style.css">
 
 <style>
+/* Modern Dashboard Enhancements */
+body {
+    background: #f5f7fa;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Header Styling */
+body > h1 {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 2rem;
+    margin: 0;
+    font-size: 2rem;
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+}
+
+/* Navigation Top Bar */
+.top-nav {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    padding: 1rem 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    color: white;
+}
+
+.top-nav a.logout-btn {
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+    padding: 0.6rem 1.2rem;
+    border-radius: 50px;
+    text-decoration: none;
+    transition: all 0.3s;
+}
+
+.top-nav a.logout-btn:hover {
+    background: rgba(255, 255, 255, 0.3);
+}
 
 .container{
 display:flex;
 max-width:1200px;
 margin:20px auto;
 background:#fff;
-box-shadow:0 0 10px rgba(0,0,0,0.1);
-border-radius:8px;
+box-shadow:0 4px 20px rgba(0,0,0,0.08);
+border-radius:16px;
 overflow:hidden;
 }
 
 .sidebar{
 width:250px;
 padding:20px;
-background:#e9ecef;
-border-right:1px solid #ccc;
+background: linear-gradient(135deg, #f5f7fa 0%, #e8ecf1 100%);
+border-right:1px solid #e0e6ed;
 }
 
 .profile-card,
 .gamification-card{
 background:#fff;
-padding:15px;
-border-radius:8px;
-box-shadow:0 2px 5px rgba(0,0,0,0.1);
+padding:20px;
+border-radius:12px;
+box-shadow:0 2px 8px rgba(0,0,0,0.06);
 margin-bottom:20px;
+border-left: 4px solid #667eea;
+transition: all 0.3s;
+}
+
+.profile-card:hover,
+.gamification-card:hover {
+    box-shadow: 0 4px 16px rgba(102, 126, 234, 0.15);
+}
+
+.profile-card h3,
+.gamification-card h3 {
+    color: #333;
+    margin-top: 0;
+    margin-bottom: 1rem;
+}
+
+.profile-edit-btn {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    padding: 0.7rem 1.5rem;
+    border-radius: 50px;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-block;
+    transition: all 0.3s;
+    font-weight: 600;
+}
+
+.profile-edit-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
 }
 
 .main-nav ul{
@@ -48,19 +119,38 @@ margin-bottom:10px;
 
 .main-nav a{
 text-decoration:none;
-color:#333;
+color:#555;
 display:block;
-padding:10px;
-border-radius:5px;
+padding:10px 12px;
+border-radius:8px;
+transition: all 0.3s;
+font-weight: 500;
 }
 
-.main-nav a:hover{
-background:#ddd;
+.main-nav a:hover,
+.main-nav a.active{
+background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+color: white;
 }
 
 .content{
 flex-grow:1;
-padding:20px;
+padding:30px;
+}
+
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    border-bottom: 2px solid #e0e6ed;
+    padding-bottom: 1rem;
+}
+
+.section-header h2 {
+    margin: 0;
+    color: #333;
+    font-size: 1.8rem;
 }
 
 .list-container{
@@ -71,21 +161,30 @@ gap:20px;
 }
 
 .card{
-background:#f9f9f9;
-border:1px solid #ddd;
-border-radius:8px;
-padding:15px;
+background:#fff;
+border:1px solid #e0e6ed;
+border-radius:12px;
+padding:20px;
 position:relative;
+transition: all 0.3s;
+box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+}
+
+.card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 24px rgba(102, 126, 234, 0.15);
 }
 
 .card.active{
-background:#e6ffed;
-border-color:#c3e6cb;
+background:#f0f4ff;
+border-color:#667eea;
+border-left: 4px solid #667eea;
 }
 
 .card.expired{
-background:#fcebeb;
-border-color:#f5c6cb;
+background:#fff5f5;
+border-color:#fc8181;
+border-left: 4px solid #fc8181;
 }
 
 .streak-counter{
@@ -161,11 +260,44 @@ background:#dc3545;
 background:#28a745;
 }
 
+.apply-modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.55);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 10001;
+}
+
+.apply-modal {
+    background: #fff;
+    width: min(680px, 90%);
+    max-height: 90vh;
+    overflow-y: auto;
+    border-radius: 12px;
+    padding: 24px;
+    box-shadow: 0 16px 40px rgba(0,0,0,0.25);
+}
+
+.apply-modal h3 {
+    margin-top: 0;
+}
+
+.apply-modal ul {
+    margin: 0;
+    padding-left: 18px;
+}
+
+.apply-modal .modal-actions {
+    display: flex;
+    gap: 12px;
+    justify-content: flex-end;
+    margin-top: 18px;
+}
+
 </style>
-
 </head>
-
-
 <body>
 
 <h1>
@@ -409,7 +541,23 @@ Close
 
 
 
-<script src="/student.js"></script>
+<div class="apply-modal-overlay" id="jobApplyModal">
+    <div class="apply-modal">
+        <h3 id="applyJobTitle">Apply for Opportunity</h3>
+        <p id="applyJobCompany"></p>
+        <p id="applyJobDeadline"></p>
+        <div id="applyJobDetails" style="margin-top: 16px;"></div>
+        <form id="applyForm" style="margin-top: 16px;">
+            <div id="applyJobRequirements"></div>
+            <div class="modal-actions">
+                <button id="closeApplyModalBtn" type="button">Close</button>
+                <button id="submitApplicationBtn" type="submit">Submit Application</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script src="http://127.0.0.1:5000/student.js"></script>
 
 </body>
 

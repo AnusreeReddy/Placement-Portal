@@ -24,35 +24,46 @@
         </div>
     </div>
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
+        document.addEventListener('DOMContentLoaded', async () => {
             const applicationsList = document.getElementById('applications-list');
-            const appliedOpportunities = JSON.parse(localStorage.getItem('appliedOpportunities')) || [];
-            const appliedEvents = JSON.parse(localStorage.getItem('appliedEvents')) || [];
+            const token = localStorage.getItem('token');
 
-            const allApplications = [...appliedOpportunities, ...appliedEvents];
+            if (!token) {
+                applicationsList.innerHTML = '<p style="text-align: center; color: red;">Please login first.</p>';
+                return;
+            }
 
-            if (allApplications.length === 0) {
-                applicationsList.innerHTML = '<p style="text-align: center;">You have not applied or registered for any opportunities yet.</p>';
-            } else {
-                allApplications.forEach(app => {
-                    const appItem = document.createElement('div');
-                    appItem.className = 'application-item';
-                    if (app.type === 'Hackathon' || app.type === 'Workshop' || app.type === 'Seminar') {
-                        appItem.innerHTML = `
-                            <h4>Registration for ${app.title}</h4>
-                            <p><strong>Organizer:</strong> ${app.organizer}</p>
-                            <p><strong>Status:</strong> Redirected to Official Website</p>
-                            <p><strong>Date:</strong> ${app.date}</p>
-                        `;
-                    } else {
+            try {
+                const res = await fetch('http://127.0.0.1:5000/my-applications', {
+                    headers: {
+                        Authorization: 'Bearer ' + token
+                    }
+                });
+
+                if (!res.ok) {
+                    throw new Error('Failed to fetch applications');
+                }
+
+                const applications = await res.json();
+
+                if (applications.length === 0) {
+                    applicationsList.innerHTML = '<p style="text-align: center;">You have not applied for any opportunities yet.</p>';
+                } else {
+                    applications.forEach(app => {
+                        const appItem = document.createElement('div');
+                        appItem.className = 'application-item';
+                        const statusColor = app.status === 'accepted' ? '#28a745' : app.status === 'rejected' ? '#dc3545' : '#ffc107';
                         appItem.innerHTML = `
                             <h4>Application for ${app.role} at ${app.company}</h4>
-                            <p><strong>Method:</strong> ${app.method || 'Redirected'}</p>
-                            <p><strong>Date:</strong> ${app.date}</p>
+                            <p><strong>Status:</strong> <span style="color: ${statusColor}; font-weight: bold; text-transform: uppercase;">${app.status || 'pending'}</span></p>
+                            <p><strong>Applied Date:</strong> ${app.applied_date ? new Date(app.applied_date).toLocaleDateString() : 'N/A'}</p>
                         `;
-                    }
-                    applicationsList.appendChild(appItem);
-                });
+                        applicationsList.appendChild(appItem);
+                    });
+                }
+            } catch (err) {
+                console.error('Error loading applications:', err);
+                applicationsList.innerHTML = '<p style="text-align: center; color: red;">Error loading applications. Please try again.</p>';
             }
         });
     </script>

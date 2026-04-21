@@ -1,534 +1,494 @@
-document.addEventListener('DOMContentLoaded', () => {
+/* ================= GLOBAL FUNCTION FOR DYNAMIC FIELDS ================= */
 
-    const token = localStorage.getItem("token");
+function addField() {
 
-    if (!token) {
+const name =
+document.getElementById("fieldName").value;
 
-        alert("Please login first");
+const type =
+document.getElementById("fieldType").value;
 
-        window.location.href = "http://127.0.0.1:5000/login";
+if (!name) {
 
-        return;
+alert("Enter field name first");
 
-    }
+return;
+
+}
+
+const container =
+document.getElementById(
+"dynamicFieldsContainer"
+);
+
+const input =
+document.createElement("input");
+
+input.className =
+"dynamic-field";
+
+input.name = name;
+
+input.dataset.type = type;
+
+input.placeholder =
+name + " (" + type + ")";
+
+container.appendChild(input);
+
+document.getElementById(
+"fieldName"
+).value = "";
+
+}
 
 
-    const postForm =
-        document.getElementById('postForm');
-
-    const postHackathonForm =
-        document.getElementById('postHackathonForm');
-
-    const postEventForm =
-        document.getElementById('postEventForm');
-
-    const openingsContainer =
-        document.getElementById(
-            'my-openings-container'
-        );
-
-    const studentList =
-        document.getElementById('student-list');
 
 
-    // ================= POST JOB =================
+/* ================= MAIN SCRIPT ================= */
 
-    if (postForm) {
+document.addEventListener(
+'DOMContentLoaded',
+() => {
 
-        postForm.addEventListener(
-            'submit',
-            async (e) => {
+const token =
+localStorage.getItem("token");
 
-                e.preventDefault();
+if (!token) {
 
-                const jobData = {
+alert("Please login first");
 
-    company: document.getElementById('companyName').value,
-    role: document.getElementById('jobRole').value,
-    stipend: document.getElementById('stipend').value,
-    duration: document.getElementById('duration').value,
-    skills: document.getElementById('requiredSkills').value,
-    url: document.getElementById('redirectingLink').value,
-    deadline: document.getElementById('deadline').value,
+window.location.href =
+"http://127.0.0.1:5000/login";
 
-    // 🔥 ADD THESE NEW FIELDS
-    cgpa: document.getElementById('cgpa').value,
-    year: document.getElementById('year').value,
-    branches: document.getElementById('branches').value,
-    job_type: document.getElementById('job_type').value
+return;
+
+}
+
+const postForm =
+document.getElementById(
+'postForm'
+);
+
+const postHackathonForm =
+document.getElementById(
+'postHackathonForm'
+);
+
+const postEventForm =
+document.getElementById(
+'postEventForm'
+);
+
+const openingsContainer =
+document.getElementById(
+'my-openings-container'
+);
+
+const studentList =
+document.getElementById(
+'student-list'
+);
+
+
+
+
+
+/* ================= POST JOB ================= */
+
+if (postForm) {
+
+postForm.addEventListener(
+'submit',
+async (e) => {
+
+e.preventDefault();
+
+const extraFields = {};
+
+document.querySelectorAll(
+".dynamic-field"
+).forEach(field => {
+
+extraFields[field.name] =
+field.dataset.type;
+
+});
+
+const jobData = {
+
+company:
+document.getElementById(
+'companyName'
+).value,
+
+role:
+document.getElementById(
+'jobRole'
+).value,
+
+stipend:
+document.getElementById(
+'stipend'
+).value,
+
+duration:
+document.getElementById(
+'duration'
+).value,
+
+skills:
+document.getElementById(
+'requiredSkills'
+).value,
+
+url:
+document.getElementById(
+'redirectingLink'
+).value,
+
+deadline:
+document.getElementById(
+'deadline'
+).value,
+
+cgpa:
+document.getElementById(
+'cgpa'
+).value,
+
+year:
+document.getElementById(
+'year'
+).value,
+
+branches:
+document.getElementById(
+'branches'
+).value,
+
+job_type:
+document.getElementById(
+'job_type'
+).value,
+
+extra_fields:
+extraFields
+
 };
 
-                const res = await fetch(
+const res =
+await fetch(
 
-                    "http://127.0.0.1:5000/post-job",
+"http://127.0.0.1:5000/post-job",
 
-                    {
+{
 
-                        method: "POST",
+method: "POST",
 
-                        headers: {
+headers: {
 
-                            "Content-Type":
-                                "application/json",
+"Content-Type":
+"application/json",
 
-                            Authorization:
-                                "Bearer " + token
+Authorization:
+"Bearer " + token
 
-                        },
+},
 
-                        body:
-                            JSON.stringify(jobData)
+body:
+JSON.stringify(jobData)
 
-                    }
+}
 
-                );
+);
 
+const data =
+await res.json();
 
-                const data =
-                    await res.json();
+alert(data.message);
 
+postForm.reset();
 
-                alert(data.message);
+loadMyJobs();
 
+}
 
-                postForm.reset();
+);
 
+}
 
-                loadMyJobs();
 
-            }
 
-        );
 
-    }
 
+/* ================= LOAD JOBS ================= */
 
+async function loadMyJobs() {
 
-    // ================= POST HACKATHON =================
+if (!openingsContainer) return;
 
-    if (postHackathonForm) {
+const res =
+await fetch(
 
-        postHackathonForm.addEventListener(
-            'submit',
-            async (e) => {
+"http://127.0.0.1:5000/jobs",
 
-                e.preventDefault();
+{
 
-                const hackData = {
+headers: {
 
-                    title:
-                        document.getElementById(
-                            'hackTitle'
-                        ).value,
+Authorization:
+"Bearer " + token
 
-                    description:
-                        document.getElementById(
-                            'hackDescription'
-                        ).value,
+}
 
-                    organizer:
-                        document.getElementById(
-                            'hackOrganizer'
-                        ).value,
+}
 
-                    skills:
-                        document.getElementById(
-                            'hackSkills'
-                        ).value,
+);
 
-                    url:
-                        document.getElementById(
-                            'hackUrl'
-                        ).value,
+const jobs =
+await res.json();
 
-                    deadline:
-                        document.getElementById(
-                            'hackDeadline'
-                        ).value
+openingsContainer.innerHTML =
+"";
 
-                };
+jobs.forEach(job => {
 
+const card =
+document.createElement("div");
 
-                const res = await fetch(
+card.className =
+"job-card";
 
-                    "http://127.0.0.1:5000/post-hackathon",
+const requirementsHtml = job.extra_fields && Object.keys(job.extra_fields).length ?
+    `<div><strong>Custom Requirements:</strong><ul>${Object.entries(job.extra_fields).map(([name, type]) => `<li>${name} (${type})</li>`).join("")}</ul></div>` :
+    `<p><em>No custom requirements set.</em></p>`;
 
-                    {
+card.innerHTML = `
 
-                        method: "POST",
+<h4>${job.role}</h4>
 
-                        headers: {
+<p><strong>Company:</strong>
+${job.company}</p>
 
-                            "Content-Type":
-                                "application/json",
+<p><strong>Skills:</strong>
+${job.skills}</p>
 
-                            Authorization:
-                                "Bearer " + token
+<p><strong>Deadline:</strong>
+${job.deadline}</p>
 
-                        },
+${requirementsHtml}
 
-                        body:
-                            JSON.stringify(hackData)
+`;
 
-                    }
+openingsContainer.appendChild(
+card
+);
 
-                );
+});
 
-                const data =
-                    await res.json();
+}
 
+loadMyJobs();
 
-                alert(data.message);
 
 
-                postHackathonForm.reset();
 
-            }
 
-        );
+/* ================= LOAD APPLICATIONS ================= */
 
-    }
+async function loadStudents() {
 
+if (!studentList) return;
 
+const res =
+await fetch(
 
-    // ================= POST EVENT =================
+"http://127.0.0.1:5000/recruiter/applications",
 
-    if (postEventForm) {
+{
 
-        postEventForm.addEventListener(
-            'submit',
-            async (e) => {
+headers: {
 
-                e.preventDefault();
+Authorization:
+"Bearer " + token
 
-                const eventData = {
+}
 
-                    title:
-                        document.getElementById(
-                            'eventTitle'
-                        ).value,
+}
 
-                    description:
-                        document.getElementById(
-                            'eventDescription'
-                        ).value,
+);
 
-                    organizer:
-                        document.getElementById(
-                            'eventOrganizer'
-                        ).value,
+const applications =
+await res.json();
 
-                    skills:
-                        document.getElementById(
-                            'eventSkills'
-                        ).value,
+studentList.innerHTML =
+"";
 
-                    url:
-                        document.getElementById(
-                            'eventUrl'
-                        ).value,
+applications.forEach(app => {
 
-                    deadline:
-                        document.getElementById(
-                            'eventDeadline'
-                        ).value
+const card =
+document.createElement("div");
 
-                };
+card.className =
+"student-card";
 
+card.innerHTML = `
 
-                const res = await fetch(
+<h4>${app.student.name} - ${app.job.role}</h4>
 
-                    "http://127.0.0.1:5000/post-event",
+<p><strong>Company:</strong>
+${app.job.company}</p>
 
-                    {
+<p><strong>Branch:</strong>
+${app.student.branch}</p>
 
-                        method: "POST",
+<p><strong>Skills:</strong>
+${app.student.skills}</p>
 
-                        headers: {
+<p><strong>CGPA:</strong>
+${app.student.cgpa}</p>
 
-                            "Content-Type":
-                                "application/json",
+<p><strong>Year:</strong>
+${app.student.year}</p>
 
-                            Authorization:
-                                "Bearer " + token
+<p><strong>Email:</strong>
+${app.student.email}</p>
 
-                        },
+<p><strong>Status:</strong>
+${app.status}</p>
 
-                        body:
-                            JSON.stringify(eventData)
+<p><strong>Applied Date:</strong>
+${new Date(app.applied_date).toLocaleDateString()}</p>
 
-                    }
+${Object.keys(app.extra_data).length ? `<p><strong>Custom Data:</strong> ${JSON.stringify(app.extra_data)}</p>` : ""}
 
-                );
+${app.student.resume ?
+`<button onclick="downloadResume('${app.student.resume}')">
+View Resume
+</button>` : ""}
 
-                const data =
-                    await res.json();
+`;
 
+studentList.appendChild(card);
 
-                alert(data.message);
+});
 
+}
 
-                postEventForm.reset();
+loadStudents();
 
-            }
 
-        );
 
-    }
 
 
+/* ================= VERIFY STUDENT ================= */
 
-    // ================= LOAD JOBS =================
+window.verifyStudent =
+async (studentId) => {
 
-    async function loadMyJobs() {
+const res =
+await fetch(
 
-        if (!openingsContainer) return;
+`http://127.0.0.1:5000/verify-student/${studentId}`,
 
+{
 
-        const res = await fetch(
+method: "POST",
 
-            "http://127.0.0.1:5000/jobs",
+headers: {
 
-            {
+Authorization:
+"Bearer " + token
 
-                headers: {
+}
 
-                    Authorization:
-                        "Bearer " + token
+}
 
-                }
+);
 
-            }
+const data =
+await res.json();
 
-        );
+alert(data.message);
 
+loadStudents();
 
-        const jobs = await res.json();
+};
 
 
-        openingsContainer.innerHTML = "";
 
 
-        jobs.forEach(job => {
 
-            const card =
-                document.createElement("div");
+/* ================= DOWNLOAD RESUME ================= */
 
+window.downloadResume =
+async (filename) => {
 
-            card.className = "job-card";
+const token = localStorage.getItem("token");
 
-
-            card.innerHTML = `
-
-                <h4>${job.role}</h4>
-
-                <p><strong>Company:</strong>
-                ${job.company}</p>
-
-                <p><strong>Skills:</strong>
-                ${job.skills}</p>
-
-                <p><strong>Deadline:</strong>
-                ${job.deadline}</p>
-
-            `;
-
-
-            openingsContainer.appendChild(card);
-
-        });
-
-    }
-
-
-    loadMyJobs();
-
-
-
-    // ================= LOAD STUDENTS =================
-
-    async function loadStudents() {
-
-        if (!studentList) return;
-
-
-        const res = await fetch(
-
-            "http://127.0.0.1:5000/students",
-
-            {
-
-                headers: {
-
-                    Authorization:
-                        "Bearer " + token
-
-                }
-
-            }
-
-        );
-
-
-        const students = await res.json();
-
-
-        studentList.innerHTML = "";
-
-
-        students.forEach(student => {
-
-            const card =
-                document.createElement("div");
-
-
-            card.className = "student-card";
-
-
-            card.innerHTML = `
-
-                <h4>${student.name}</h4>
-
-                <p><strong>Branch:</strong>
-                ${student.branch}</p>
-
-                <p><strong>Skills:</strong>
-                ${student.skills}</p>
-
-                <p><strong>Email:</strong>
-                ${student.email}</p>
-
-                <p><strong>Verified:</strong>
-                ${student.verified ? 'Yes' : 'No'}</p>
-
-                <button onclick="verifyStudent(${student.id})">
-                ${student.verified ? 'Unverify' : 'Verify'}
-                </button>
-
-                ${student.resume ? `<button onclick="downloadResume(${student.id})">Download Resume</button>` : ''}
-
-            `;
-
-
-            studentList.appendChild(card);
-
-        });
-
-    }
-
-
-    loadStudents();
-
-
-
-    // ================= VERIFY STUDENT =================
-
-    window.verifyStudent = async (studentId) => {
-
-        const res = await fetch(
-
-            `http://127.0.0.1:5000/verify-student/${studentId}`,
-
-            {
-
-                method: "POST",
-
-                headers: {
-
-                    Authorization:
-                        "Bearer " + token
-
-                }
-
-            }
-
-        );
-
-        const data = await res.json();
-
-        alert(data.message);
-
-        loadStudents();  // Reload to update status
-
-    };
-
-
-
-    // ================= DOWNLOAD RESUME =================
-
-    window.downloadResume = async (studentId) => {
-
-        const res = await fetch(
-
-            `http://127.0.0.1:5000/download-resume/${studentId}`,
-
-            {
-
-                headers: {
-
-                    Authorization:
-                        "Bearer " + token
-
-                }
-
-            }
-
-        );
-
-        if (res.ok) {
-
-            const blob = await res.blob();
-
-            const url = window.URL.createObjectURL(blob);
-
-            const a = document.createElement('a');
-
-            a.href = url;
-
-            a.download = `resume_${studentId}.pdf`;
-
-            document.body.appendChild(a);
-
-            a.click();
-
-            window.URL.revokeObjectURL(url);
-
-            document.body.removeChild(a);
-
-        } else {
-
-            alert('Resume not available');
-
+try {
+    const res = await fetch(`http://127.0.0.1:5000/resume/${filename}`, {
+        headers: {
+            Authorization: "Bearer " + token
         }
+    });
 
-    };
-
-
-
-    // ================= LOGOUT =================
-
-    const logoutBtn =
-        document.getElementById("logoutBtn");
-
-    if (logoutBtn) {
-
-        logoutBtn.addEventListener(
-            "click",
-            e => {
-
-                e.preventDefault();
-
-                localStorage.removeItem("token");
-
-                localStorage.removeItem("role");
-
-                window.location.href =
-                    "http://127.0.0.1:5000/login";
-
-            }
-
-        );
-
+    if (!res.ok) {
+        alert("Error downloading resume. Authorization failed.");
+        return;
     }
+
+    const blob = await res.blob();
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    window.URL.revokeObjectURL(url);
+    document.body.removeChild(a);
+} catch (err) {
+    console.error("Resume download error:", err);
+    alert("Failed to download resume.");
+}
+
+};
+
+
+
+
+
+/* ================= LOGOUT ================= */
+
+const logoutBtn =
+document.getElementById("logoutBtn");
+
+if (logoutBtn) {
+
+logoutBtn.addEventListener(
+
+"click",
+
+(e) => {
+
+e.preventDefault();
+
+localStorage.removeItem(
+"token"
+);
+
+localStorage.removeItem(
+"role"
+);
+
+window.location.href =
+"http://127.0.0.1:5000/login";
+
+}
+
+);
+
+}
 
 });
